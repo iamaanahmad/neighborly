@@ -53,11 +53,11 @@ export default function HomePage() {
               </div>
             </div>
             <Image
-              src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1470&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1470&auto=format&fit=crop"
               width="600"
               height="400"
               alt="Community helping hands"
-              data-ai-hint="community helping"
+              data-ai-hint="community people"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full"
             />
           </div>
