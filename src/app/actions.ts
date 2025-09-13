@@ -1,6 +1,7 @@
 'use server';
 
 import { helpRequestAssistance } from '@/ai/flows/help-request-assistance';
+import { chatSuggestion, ChatSuggestionInput } from '@/ai/flows/chat-suggestion';
 import { db } from '@/lib/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { z } from 'zod';
@@ -74,4 +75,21 @@ export async function createHelpRequest(values: z.infer<typeof requestSchema>) {
     return {
         error: null,
     }
+}
+
+
+export async function getChatSuggestions(input: ChatSuggestionInput) {
+  try {
+    const result = await chatSuggestion(input);
+    return {
+      error: null,
+      suggestions: result.suggestions,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      error: 'Failed to get AI suggestions.',
+      suggestions: [],
+    };
+  }
 }
