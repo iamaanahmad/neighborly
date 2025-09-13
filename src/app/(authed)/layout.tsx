@@ -32,14 +32,14 @@ export default function AuthedLayout({
   }
 
   return (
-      <div className="relative flex min-h-screen">
+      <div className="relative flex min-h-screen w-full">
         <Sidebar>
             <AppSidebar />
         </Sidebar>
-        <SidebarInset>
+        <div className="flex flex-col flex-1">
             <AppHeader />
             <main className="p-4 lg:p-6">{children}</main>
-        </SidebarInset>
+        </div>
     </div>
   );
 }
