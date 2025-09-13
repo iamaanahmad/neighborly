@@ -90,51 +90,57 @@ export default function LoginPage() {
   const handleDemoLogin = async () => {
     setLoading(true);
     try {
-      // Ensure demo user exists, if not, create it
-      const userDocRef = doc(db, 'users', 'demouser'); // Use a predictable ID
-      const userDoc = await getDoc(userDocRef);
-
-      if (!userDoc.exists()) {
-        // This is a simplified signup for the demo user, in a real app this would be more secure.
-        // We can't create a user with a specific UID on the client, so we'll sign them up and then fetch them.
-        // For this demo, we'll assume the demo user is already in the auth system.
-        // If not, the first login attempt will fail, and we can't create them here with a predictable password.
-        // The logic below ensures that if they don't exist in auth, they are created.
-         try {
-            await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
-         } catch (error: any) {
-            if (error.code === 'auth/user-not-found') {
-              const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
-              const user = userCredential.user;
-              await setDoc(doc(db, 'users', user.uid), {
-                id: user.uid,
-                name: 'Demo User',
-                email: user.email,
-                role: 'both',
-                avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
-              });
-            } else {
-               throw error; // re-throw other errors
-            }
-         }
-      }
-      
+      // First, try to sign in the demo user.
       await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
-      
-      toast({
-          title: 'Signed In as Demo User',
-          description: "You're now logged in as a user with the 'Both' role.",
-      });
-
     } catch (error: any) {
-       toast({
-        variant: 'destructive',
-        title: 'Authentication Error',
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
+      // If the user doesn't exist, create them.
+      if (error.code === 'auth/user-not-found') {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
+          const user = userCredential.user;
+          
+          // Create the user document in Firestore.
+          await setDoc(doc(db, 'users', user.uid), {
+            id: user.uid,
+            name: 'Demo User',
+            email: user.email,
+            role: 'both',
+            avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
+          });
+
+          // Now, sign in again (though createUserWithEmailAndPassword also signs the user in)
+          // This is just to be absolutely sure.
+          await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
+
+        } catch (creationError: any) {
+          toast({
+            variant: 'destructive',
+            title: 'Demo User Setup Failed',
+            description: creationError.message,
+          });
+          setLoading(false);
+          return;
+        }
+      } else {
+        // For other sign-in errors, show the error message.
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Error',
+          description: error.message,
+        });
+        setLoading(false);
+        return;
+      }
     }
+    
+    // If sign-in (or creation and sign-in) was successful.
+    toast({
+        title: 'Signed In as Demo User',
+        description: "You're now logged in as a user with the 'Both' role.",
+    });
+
+    // The useEffect will handle the redirect, but we can turn off loading.
+    setLoading(false);
   }
 
 
