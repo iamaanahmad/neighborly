@@ -21,6 +21,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { recentRequests, recentOffers, users } from '@/lib/data';
 import Image from 'next/image';
 import { HandHelping, FileSearch, MessagesSquare, ShieldCheck, Bot } from 'lucide-react';
+import { FirebaseLogo } from '@/components/logo-firebase';
+import { GeminiLogo } from '@/components/logo-gemini';
 
 export default function HomePage() {
   const activities = [...recentRequests, ...recentOffers].sort(
@@ -223,9 +225,28 @@ export default function HomePage() {
 
       <footer className="border-t bg-muted">
         <div className="container mx-auto flex flex-col gap-4 sm:flex-row py-6 items-center px-4 md:px-6">
-            <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} Neighborly. All rights reserved.
-            </p>
+             <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>Made with</span>
+              <a
+                href="https://firebase.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 hover:underline"
+              >
+                <FirebaseLogo className="size-5" />
+                <span>Firebase</span>
+              </a>
+              <span>+</span>
+              <a
+                href="https://ai.google/gemini"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 hover:underline"
+              >
+                <GeminiLogo className="size-4" />
+                <span>Gemini</span>
+              </a>
+            </div>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
               <Link
                 className="text-xs hover:underline underline-offset-4"
@@ -235,7 +256,7 @@ export default function HomePage() {
               </Link>
               <a
                 className="text-xs hover:underline underline-offset-4"
-                href="https://github.com/iamaanahmad/neighborly"
+                href="https://github.com/FirebaseExtended/genkit-nextjs-shadcn-starter"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -259,5 +280,3 @@ export default function HomePage() {
     </>
   );
 }
-
-    

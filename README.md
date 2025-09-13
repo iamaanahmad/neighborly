@@ -1,9 +1,9 @@
+
 # Neighborly 🤝
 
 **Get and Give Help in Your Community — Powered by AI**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Open_App-brightgreen)](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.3-black?logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime_Backend-orange?logo=firebase)](https://firebase.google.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI_Powered-blue?logo=google&logoColor=white)](https://ai.google/gemini/)
 [![React](https://img.shields.io/badge/React-18-blue?logo=react)](https://reactjs.org/)
@@ -41,7 +41,11 @@ This project was built to demonstrate the power of combining a modern web stack 
 
 ---
 
-### 🚀 Getting Started
+### 🚀 Live Demo
+
+You can try the live application here:
+
+**[https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)**
 
 #### Demo Credentials
 
@@ -66,21 +70,42 @@ Just head to the login page and use the "Login as Demo User" button for one-clic
 
 ---
 
-### 👤 User Flows
+### Local Development
 
-#### For a Seeker (Someone who needs help):
-1.  **Sign Up**: Creates an account and chooses the "Seeker" role.
-2.  **Request Help**: From their dashboard, they navigate to the request form.
-3.  **AI Assistance**: They type a simple need (e.g., "Need dog walked"), and the AI helps them draft a well-structured post.
-4.  **Submit & Moderation**: The request is sent to the `moderate-text` flow. If approved, it's posted live on the "Offer Help" board.
-5.  **Get Connected**: A helper offers to assist, creating a private chat room in the "Messages" page.
-6.  **Coordinate**: They use the real-time chat to coordinate details with the volunteer.
+To run this project on your local machine:
 
-#### For a Helper (A volunteer):
-1.  **Sign Up**: Creates an account and chooses the "Helper" role.
-2.  **Find Requests**: From their dashboard, they browse a live list of open requests from their neighbors.
-3.  **Offer Help**: They find a request they can fulfill and click "Offer to Help," which navigates them to the "Messages" page.
-4.  **Connect & Chat**: A new chat with the seeker is automatically created. The helper can use AI-suggested replies from the `chat-suggestion` flow to respond quickly.
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/FirebaseExtended/genkit-nextjs-shadcn-starter.git
+    cd genkit-nextjs-shadcn-starter
+    ```
+
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Set Up Environment Variables**:
+    Create a `.env` file in the root of your project and add your Gemini API key:
+    ```
+    GEMINI_API_KEY=your_google_ai_api_key
+    ```
+    *You can get a key from [Google AI Studio](https://aistudio.google.com/app/apikey).*
+
+4.  **Run the Development Server**:
+    The app requires two processes to run concurrently: the Next.js frontend and the Genkit AI flows.
+
+    -   In your first terminal, run the Next.js app:
+        ```bash
+        npm run dev
+        ```
+    -   In a second terminal, run the Genkit flows in watch mode:
+        ```bash
+        npm run genkit:watch
+        ```
+
+5.  **Open the App**:
+    Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
