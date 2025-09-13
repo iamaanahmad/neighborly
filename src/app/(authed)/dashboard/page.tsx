@@ -21,19 +21,46 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ArrowRight, HandHelping, HeartHandshake } from 'lucide-react';
-import { recentRequests, recentOffers, users } from '@/lib/data';
 import { useAuth } from '@/contexts/auth-context';
+import { useEffect, useState } from 'react';
+import { collection, query, orderBy, limit, onSnapshot, getDoc, doc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { HelpRequest, User } from '@/lib/types';
+import { formatDistanceToNow } from 'date-fns';
+
+type RequestWithUser = HelpRequest & { user?: User };
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const activities = [...recentRequests, ...recentOffers].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-
-  const getUser = (userId: string) => users.find(u => u.id === userId);
+  const [recentActivity, setRecentActivity] = useState<RequestWithUser[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const canRequestHelp = user?.role === 'seeker' || user?.role === 'both';
   const canOfferHelp = user?.role === 'helper' || user?.role === 'both';
+
+  useEffect(() => {
+    setLoading(true);
+    const q = query(collection(db, 'requests'), orderBy('createdAt', 'desc'), limit(5));
+
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      const activities = await Promise.all(snapshot.docs.map(async (requestDoc) => {
+        const requestData = { ...requestDoc.data(), id: requestDoc.id } as HelpRequest;
+        let userData: User | undefined = undefined;
+
+        if (requestData.userId) {
+          const userSnap = await getDoc(doc(db, 'users', requestData.userId));
+          if (userSnap.exists()) {
+            userData = userSnap.data() as User;
+          }
+        }
+        return { ...requestData, user: userData };
+      }));
+      setRecentActivity(activities);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
@@ -110,39 +137,57 @@ export default function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {activities.slice(0, 5).map(activity => {
-                  const activityUser = getUser(activity.userId);
-                  const isRequest = 'status' in activity;
-                  return (
-                    <TableRow key={activity.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          {isRequest ? (
-                            <Badge variant="secondary">Request</Badge>
-                          ) : (
-                            <Badge variant="outline">Offer</Badge>
-                          )}
-                          <span className="truncate">{activity.description.substring(0, 40)}...</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{activity.type}</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={activityUser?.avatarUrl} alt={activityUser?.name} data-ai-hint="person portrait" />
-                            <AvatarFallback>
-                              {activityUser?.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span>{activityUser?.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {new Date(activity.createdAt).toLocaleDateString()}
-                      </TableCell>
+                {loading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                        <TableRow key={i}>
+                            <TableCell colSpan={4} className="text-center">
+                                <p className="animate-pulse">Loading activity...</p>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : recentActivity.length === 0 ? (
+                    <TableRow>
+                        <TableCell colSpan={4} className="text-center h-24">
+                        No recent activity in the community.
+                        </TableCell>
                     </TableRow>
-                  );
-                })}
+                ) : (
+                    recentActivity.map(activity => {
+                    const activityUser = activity.user;
+                    const isRequest = 'status' in activity;
+                    const createdAt = activity.createdAt?.toDate ? activity.createdAt.toDate() : new Date();
+
+                    return (
+                        <TableRow key={activity.id}>
+                        <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                            {isRequest ? (
+                                <Badge variant="secondary">Request</Badge>
+                            ) : (
+                                <Badge variant="outline">Offer</Badge>
+                            )}
+                            <span className="truncate">{activity.description.substring(0, 40)}...</span>
+                            </div>
+                        </TableCell>
+                        <TableCell>{activity.type}</TableCell>
+                        <TableCell className="hidden md:table-cell">
+                            <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={activityUser?.avatarUrl} alt={activityUser?.name} data-ai-hint="person portrait" />
+                                <AvatarFallback>
+                                {activityUser?.name.charAt(0)}
+                                </AvatarFallback>
+                            </Avatar>
+                            <span>{activityUser?.name}</span>
+                            </div>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                            {formatDistanceToNow(createdAt, { addSuffix: true })}
+                        </TableCell>
+                        </TableRow>
+                    );
+                    })
+                )}
               </TableBody>
             </Table>
           </CardContent>

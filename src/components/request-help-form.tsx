@@ -28,6 +28,7 @@ import { useActionState, useEffect, useTransition } from 'react';
 import { getHelpRequestSuggestion, createHelpRequest } from '@/app/actions';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   requestType: z.string({
@@ -41,6 +42,7 @@ const formSchema = z.object({
 export function RequestHelpForm() {
   const { toast } = useToast();
   const { user } = useAuth();
+  const router = useRouter();
   const [isSubmitPending, startSubmitTransition] = useTransition();
 
   const [aiState, aiFormAction, isAiPending] = useActionState(getHelpRequestSuggestion, {
@@ -93,6 +95,7 @@ export function RequestHelpForm() {
                 description: 'Your help request has been posted to the community.',
             });
             form.reset();
+            router.push('/dashboard');
         }
     });
   }
@@ -114,7 +117,7 @@ export function RequestHelpForm() {
 
   return (
     <Form {...form}>
-      <form action={aiFormAction} onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="requestType"
@@ -151,11 +154,10 @@ export function RequestHelpForm() {
                   className="resize-none"
                   rows={5}
                   {...field}
-                  name="additionalDetails"
                 />
               </FormControl>
-              <FormDescription>
-                Provide as much detail as possible so neighbors can understand your needs.
+               <FormDescription>
+                You can write your own description or get a suggestion from our AI assistant below.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -168,11 +170,16 @@ export function RequestHelpForm() {
           </Button>
 
           <Button
-            type="submit"
+            type="button"
             variant="secondary"
             className="w-full"
             disabled={isSubmitPending || isAiPending}
-            formAction={aiFormAction}
+            onClick={() => {
+                const formData = new FormData();
+                formData.append('requestType', form.getValues('requestType'));
+                formData.append('additionalDetails', form.getValues('details'));
+                aiFormAction(formData);
+            }}
           >
             {isAiPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
