@@ -9,13 +9,16 @@ import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Send } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
 
 export function ChatInterface() {
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
   const [selectedConversation, setSelectedConversation] = useState<Conversation>(conversations[0]);
   const [newMessage, setNewMessage] = useState('');
 
-  const currentUser = users[0]; // Assuming current user is user-1
+  const { user: currentUser } = useAuth();
+
+  if (!currentUser) return null;
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();

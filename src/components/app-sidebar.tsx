@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { href: '/', label: 'Dashboard', icon: Home },
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/request-help', label: 'Request Help', icon: HandHelping },
   { href: '/offer-help', label: 'Offer Help', icon: HeartHandshake },
   { href: '/resources', label: 'Resources', icon: BookMarked },
@@ -35,7 +35,7 @@ export function AppSidebar() {
   return (
     <>
       <SidebarHeader>
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
           <HeartHandshake className="size-7" />
           <span className="text-foreground">Neighborly</span>
         </Link>
