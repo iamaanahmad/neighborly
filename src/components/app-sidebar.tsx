@@ -10,13 +10,14 @@ import {
   BookMarked,
   MessagesSquare,
   Settings,
-  CircleHelp,
   Shield,
+} from 'lucide-react';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from 'lucide-react';
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
 
