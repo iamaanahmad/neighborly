@@ -11,11 +11,14 @@ import {
   MessagesSquare,
   Settings,
   CircleHelp,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/auth-context';
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
@@ -24,6 +27,9 @@ export function AppSidebar() {
     { href: '/messages', label: 'Messages', icon: MessagesSquare },
     { href: '/resources', label: 'Resources', icon: BookMarked },
   ];
+
+  // A simple way to show admin link, in a real app this would be more robust
+  const isAdmin = user?.email?.endsWith('@admin.com');
 
   return (
     <aside className="hidden w-64 flex-col border-r bg-background sm:flex">
@@ -49,6 +55,25 @@ export function AppSidebar() {
             </Link>
           ))}
         </div>
+        {isAdmin && (
+          <>
+            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
+                Admin
+            </div>
+            <div className="grid items-start px-2 text-sm font-medium lg:px-4">
+                 <Link
+                    href="/admin/dashboard"
+                    className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                        pathname === '/admin/dashboard' && 'bg-muted text-primary'
+                    )}
+                    >
+                    <Shield className="h-4 w-4" />
+                    Insights
+                </Link>
+            </div>
+          </>
+        )}
       </nav>
       <div className="mt-auto p-4">
         <div className="grid items-start px-2 text-sm font-medium lg:px-4">
