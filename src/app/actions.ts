@@ -1,3 +1,4 @@
+
 'use server';
 
 import { helpRequestAssistance } from '@/ai/flows/help-request-assistance';
@@ -8,11 +9,11 @@ import { z } from 'zod';
 import { moderateText } from '@/ai/flows/moderate-text';
 
 const suggestionSchema = z.object({
-  requestType: z.string(),
-  additionalDetails: z.string(),
+  requestType: z.string().optional(),
+  additionalDetails: z.string().optional(),
 });
 
-export async function getHelpRequestSuggestion(formData: FormData) {
+export async function getHelpRequestSuggestion(prevState: any, formData: FormData) {
   const validatedFields = suggestionSchema.safeParse({
     requestType: formData.get('requestType'),
     additionalDetails: formData.get('additionalDetails'),
@@ -25,8 +26,21 @@ export async function getHelpRequestSuggestion(formData: FormData) {
     };
   }
 
+  const { requestType, additionalDetails } = validatedFields.data;
+
+  if (!requestType && !additionalDetails) {
+     return {
+      error: 'Please provide a request type or some details for the AI to generate a suggestion.',
+      suggestion: null,
+    };
+  }
+
+
   try {
-    const result = await helpRequestAssistance(validatedFields.data);
+    const result = await helpRequestAssistance({
+        requestType: requestType || '',
+        additionalDetails: additionalDetails || ''
+    });
     return {
       error: null,
       suggestion: result.suggestedRequestText,

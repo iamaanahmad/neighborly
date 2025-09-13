@@ -12,6 +12,10 @@ import {
   Settings,
   CircleHelp,
   Shield,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
@@ -32,67 +36,68 @@ export function AppSidebar() {
   const isAdmin = user?.email?.endsWith('@admin.com');
 
   return (
-    <aside className="hidden w-64 flex-col border-r bg-background sm:flex">
-      <header className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <HeartHandshake className="size-7" />
-          <span className="text-foreground">Neighborly</span>
+    <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+      <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
+        <Link
+          href="/"
+          className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+        >
+          <HeartHandshake className="h-4 w-4 transition-all group-hover:scale-110" />
+          <span className="sr-only">Neighborly</span>
         </Link>
-      </header>
-      <nav className="flex-1 overflow-auto py-2">
-        <div className="grid items-start px-2 text-sm font-medium lg:px-4">
+        <TooltipProvider>
           {menuItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                pathname === item.href && 'bg-muted text-primary'
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-        {isAdmin && (
-          <>
-            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
-                Admin
-            </div>
-            <div className="grid items-start px-2 text-sm font-medium lg:px-4">
-                 <Link
-                    href="/admin/dashboard"
-                    className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                        pathname === '/admin/dashboard' && 'bg-muted text-primary'
-                    )}
-                    >
-                    <Shield className="h-4 w-4" />
-                    Insights
+            <Tooltip key={item.href}>
+              <TooltipTrigger asChild>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+                    pathname === item.href && 'bg-accent text-accent-foreground'
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="sr-only">{item.label}</span>
                 </Link>
-            </div>
-          </>
-        )}
+              </TooltipTrigger>
+              <TooltipContent side="right">{item.label}</TooltipContent>
+            </Tooltip>
+          ))}
+          {isAdmin && (
+             <Tooltip>
+                <TooltipTrigger asChild>
+                    <Link
+                        href="/admin/dashboard"
+                         className={cn(
+                            'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+                            pathname === '/admin/dashboard' && 'bg-accent text-accent-foreground'
+                        )}
+                    >
+                        <Shield className="h-5 w-5" />
+                        <span className="sr-only">Admin Insights</span>
+                    </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Admin Insights</TooltipContent>
+            </Tooltip>
+          )}
+        </TooltipProvider>
       </nav>
-      <div className="mt-auto p-4">
-        <div className="grid items-start px-2 text-sm font-medium lg:px-4">
-          <Link
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-          >
-            <Settings className="h-4 w-4" />
-            Settings
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-          >
-            <CircleHelp className="h-4 w-4" />
-            Help
-          </Link>
-        </div>
-      </div>
+      <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="#"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Settings</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Settings</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </nav>
     </aside>
   );
 }

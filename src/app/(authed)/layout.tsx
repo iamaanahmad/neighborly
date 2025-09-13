@@ -33,7 +33,7 @@ export default function AuthedLayout({
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <AppSidebar />
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <AppHeader />
         <main className="flex-1 overflow-auto p-4 sm:p-6">{children}</main>
       </div>

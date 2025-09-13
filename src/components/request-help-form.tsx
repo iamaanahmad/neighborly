@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,9 +24,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Bot, Loader2, LogIn } from 'lucide-react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useTransition } from 'react';
 import { getHelpRequestSuggestion, createHelpRequest } from '@/app/actions';
-import { useEffect, useTransition } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 
@@ -41,7 +41,12 @@ const formSchema = z.object({
 export function RequestHelpForm() {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [isPending, startTransition] = useTransition();
+  const [isSubmitPending, startSubmitTransition] = useTransition();
+
+  const [aiState, aiFormAction, isAiPending] = useActionState(getHelpRequestSuggestion, {
+    error: null,
+    suggestion: null,
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,23 +56,18 @@ export function RequestHelpForm() {
     },
   });
 
-  const [state, formAction] = useFormState(getHelpRequestSuggestion, {
-    error: null,
-    suggestion: null,
-  });
-
   useEffect(() => {
-    if (state.suggestion) {
-      form.setValue('details', state.suggestion);
+    if (aiState.suggestion) {
+      form.setValue('details', aiState.suggestion);
     }
-    if (state.error) {
+    if (aiState.error) {
       toast({
         variant: 'destructive',
         title: 'AI Assistant Error',
-        description: state.error,
+        description: aiState.error,
       });
     }
-  }, [state, form, toast]);
+  }, [aiState, form, toast]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) {
@@ -79,7 +79,7 @@ export function RequestHelpForm() {
       return;
     }
 
-    startTransition(async () => {
+    startSubmitTransition(async () => {
         const result = await createHelpRequest({ ...values, userId: user.id });
         if (result.error) {
             toast({
@@ -95,25 +95,6 @@ export function RequestHelpForm() {
             form.reset();
         }
     });
-  }
-  
-  function AiButton() {
-    const { pending } = useFormStatus();
-    return (
-       <Button
-        type="submit"
-        variant="secondary"
-        className="w-full"
-        disabled={pending}
-      >
-        {pending ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Bot className="mr-2 h-4 w-4" />
-        )}
-        Get AI Suggestion
-      </Button>
-    )
   }
 
   if (!user) {
@@ -133,14 +114,14 @@ export function RequestHelpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form action={aiFormAction} onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="requestType"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type of Help</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} name="requestType">
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -170,6 +151,7 @@ export function RequestHelpForm() {
                   className="resize-none"
                   rows={5}
                   {...field}
+                  name="additionalDetails"
                 />
               </FormControl>
               <FormDescription>
@@ -180,15 +162,25 @@ export function RequestHelpForm() {
           )}
         />
         <div className="space-y-4">
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" className="w-full" disabled={isSubmitPending || isAiPending}>
+            {isSubmitPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Post Request
           </Button>
-          <form action={formAction}>
-            <input type="hidden" name="requestType" value={form.watch('requestType')} />
-            <input type="hidden" name="additionalDetails" value={form.watch('details')} />
-            <AiButton/>
-          </form>
+
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-full"
+            disabled={isSubmitPending || isAiPending}
+            formAction={aiFormAction}
+          >
+            {isAiPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Bot className="mr-2 h-4 w-4" />
+            )}
+            Get AI Suggestion
+          </Button>
         </div>
       </form>
     </Form>
