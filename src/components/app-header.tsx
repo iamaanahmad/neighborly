@@ -45,29 +45,29 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
-      {isAuthedPage && (
-         <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
-                <PanelLeft className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs p-0">
-                <AppSidebar />
-            </SheetContent>
-          </Sheet>
-      )}
-      
-      {!isAuthedPage ? (
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary mr-auto">
-            <HeartHandshake className="size-6" />
-            <span className="text-foreground">Neighborly</span>
-          </Link>
+      {isAuthedPage ? (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button size="icon" variant="outline" className="sm:hidden">
+              <PanelLeft className="h-5 w-5" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="sm:max-w-xs p-0">
+            <AppSidebar />
+          </SheetContent>
+        </Sheet>
       ) : (
-         <div className="flex-1">
-            <h1 className="text-lg font-semibold md:text-xl hidden sm:block">{title}</h1>
-         </div>
+        <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary mr-auto">
+          <HeartHandshake className="size-6" />
+          <span className="text-foreground">Neighborly</span>
+        </Link>
+      )}
+
+      {isAuthedPage && (
+        <div className="flex-1">
+          <h1 className="text-lg font-semibold md:text-xl hidden sm:block">{title}</h1>
+        </div>
       )}
 
       <div className="flex items-center gap-4 ml-auto">
@@ -79,7 +79,7 @@ export function AppHeader() {
             <Button variant="ghost" asChild>
               <Link href="/resources">Find Resources</Link>
             </Button>
-             <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild>
               <Link href="/request-help">Post a Request</Link>
             </Button>
           </nav>

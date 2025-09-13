@@ -24,6 +24,7 @@ import { useToast } from '@/hooks/use-toast';
 import { HeartHandshake, Loader2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { User } from '@/lib/types';
+import { AppHeader } from '@/components/app-header';
 
 export default function LoginPage() {
   const { toast } = useToast();
@@ -76,92 +77,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
-       <div className="flex items-center gap-2 font-bold text-2xl text-primary mb-8">
-          <HeartHandshake className="size-8" />
-          <span className="text-foreground">Neighborly</span>
+    <div className="flex flex-col min-h-screen bg-background">
+      <AppHeader />
+      <main className="flex flex-1 flex-col items-center justify-center p-4">
+        <div className="w-full max-w-sm">
+          <div className="flex items-center justify-center gap-2 font-bold text-2xl text-primary mb-8">
+            <HeartHandshake className="size-8" />
+            <span className="text-foreground">Neighborly</span>
+          </div>
+          <Tabs defaultValue="signin" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="signin">Sign In</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
+            <form onSubmit={handleAuthAction}>
+              <TabsContent value="signin">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Sign In</CardTitle>
+                    <CardDescription>
+                      Welcome back! Please enter your details.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email-signin">Email</Label>
+                      <Input id="email-signin" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password-signin">Password</Label>
+                      <Input id="password-signin" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Sign In
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+              <TabsContent value="signup">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Sign Up</CardTitle>
+                    <CardDescription>
+                      Create an account to join your community.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name-signup">Name</Label>
+                      <Input id="name-signup" type="text" placeholder="John Doe" required value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email-signup">Email</Label>
+                      <Input id="email-signup" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password-signup">Password</Label>                      
+                      <Input id="password-signup" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>I want to...</Label>
+                      <RadioGroup defaultValue="seeker" onValueChange={(value: User['role']) => setRole(value)}>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="seeker" id="r1" />
+                          <Label htmlFor="r1">Get help from my community</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="helper" id="r2" />
+                          <Label htmlFor="r2">Offer help to my community</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="both" id="r3" />
+                          <Label htmlFor="r3">Do both!</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Sign Up
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+            </form>
+          </Tabs>
         </div>
-      <Tabs defaultValue="signin" className="w-full max-w-sm" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="signin">Sign In</TabsTrigger>
-          <TabsTrigger value="signup">Sign Up</TabsTrigger>
-        </TabsList>
-        <form onSubmit={handleAuthAction}>
-        <TabsContent value="signin">
-          <Card>
-            <CardHeader>
-              <CardTitle>Sign In</CardTitle>
-              <CardDescription>
-                Welcome back! Please enter your details.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email-signin">Email</Label>
-                <Input id="email-signin" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password-signin">Password</Label>
-                <Input id="password-signin" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign In
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="signup">
-          <Card>
-            <CardHeader>
-              <CardTitle>Sign Up</CardTitle>
-              <CardDescription>
-                Create an account to join your community.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-               <div className="space-y-2">
-                <Label htmlFor="name-signup">Name</Label>
-                <Input id="name-signup" type="text" placeholder="John Doe" required value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email-signup">Email</Label>
-                <Input id="email-signup" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password-signup">Password</Label>
-                <Input id="password-signup" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-               <div className="space-y-2">
-                <Label>I want to...</Label>
-                <RadioGroup defaultValue="seeker" onValueChange={(value: User['role']) => setRole(value)}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="seeker" id="r1" />
-                    <Label htmlFor="r1">Get help from my community</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="helper" id="r2" />
-                    <Label htmlFor="r2">Offer help to my community</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="both" id="r3" />
-                    <Label htmlFor="r3">Do both!</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign Up
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        </form>
-      </Tabs>
+      </main>
     </div>
   );
 }

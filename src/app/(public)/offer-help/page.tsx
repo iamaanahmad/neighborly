@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/select';
 import { OfferList } from '@/components/offer-list';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/auth-context';
 
 export default function OfferHelpPage() {
   return (
