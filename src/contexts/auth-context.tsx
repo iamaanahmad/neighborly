@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -25,14 +26,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-      setLoading(true);
+      // setLoading(true); // This causes a flicker, handled by the default state
       if (fbUser) {
         setFirebaseUser(fbUser);
         const userDocRef = doc(db, 'users', fbUser.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setUser(userDoc.data() as User);
+          setUser({ id: userDoc.id, ...userDoc.data() } as User);
         } else {
           // This case might happen if the user was created but the Firestore doc wasn't.
           // We can create a default profile here as a fallback.

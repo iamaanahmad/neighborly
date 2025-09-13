@@ -41,18 +41,17 @@ export type Message = {
   id: string;
   senderId: string;
   text: string;
-  timestamp: string;
+  timestamp: any; // Firestore serverTimestamp is tricky to type
   isRead: boolean;
 };
 
 export type Conversation = {
   id: string;
-  userId: string;
-  userName: string;
-  userAvatar: string;
+  participantIds: string[];
+  userName?: string; // Other user's name
+  userAvatar?: string; // Other user's avatar
   lastMessage: string;
-  lastMessageTimestamp: string;
+  lastMessageTimestamp: any; // Firestore serverTimestamp
   unreadCount: number;
-  messages: Message[];
   requestId?: string; // To link conversation to a specific request
 };
