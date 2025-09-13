@@ -31,8 +31,8 @@ export default function HomePage() {
   return (
     <>
       <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-primary/10 to-accent/10">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -65,7 +65,7 @@ export default function HomePage() {
       </section>
 
       <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <Card>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
@@ -131,7 +131,7 @@ export default function HomePage() {
       </section>
 
       <footer className="border-t">
-        <div className="container flex flex-col gap-2 sm:flex-row py-6 items-center px-4 md:px-6">
+        <div className="container mx-auto flex flex-col gap-2 sm:flex-row py-6 items-center px-4 md:px-6">
             <p className="text-xs text-muted-foreground">
               &copy; {new Date().getFullYear()} Neighborly. All rights reserved.
             </p>
