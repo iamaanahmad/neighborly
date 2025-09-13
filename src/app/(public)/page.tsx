@@ -1,4 +1,6 @@
 
+'use client';
+
 import Link from 'next/link';
 import {
   Card,
@@ -18,16 +20,43 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { recentRequests, recentOffers, users } from '@/lib/data';
 import Image from 'next/image';
 import { HandHelping, FileSearch, MessagesSquare, ShieldCheck, Bot } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { collection, query, orderBy, limit, onSnapshot, getDoc, doc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { HelpRequest, User } from '@/lib/types';
+import { formatDistanceToNow } from 'date-fns';
+
+type RequestWithUser = HelpRequest & { user?: User };
 
 export default function HomePage() {
-  const activities = [...recentRequests, ...recentOffers].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const [recentActivity, setRecentActivity] = useState<RequestWithUser[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const getUser = (userId: string) => users.find(u => u.id === userId);
+  useEffect(() => {
+    setLoading(true);
+    const q = query(collection(db, 'requests'), orderBy('createdAt', 'desc'), limit(5));
+
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      const activities = await Promise.all(snapshot.docs.map(async (requestDoc) => {
+        const requestData = { ...requestDoc.data(), id: requestDoc.id } as HelpRequest;
+        let userData: User | undefined = undefined;
+
+        if (requestData.userId) {
+          const userSnap = await getDoc(doc(db, 'users', requestData.userId));
+          if (userSnap.exists()) {
+            userData = userSnap.data() as User;
+          }
+        }
+        return { ...requestData, user: userData };
+      }));
+      setRecentActivity(activities);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
@@ -58,6 +87,7 @@ export default function HomePage() {
               height="400"
               alt="Community helping hands"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full"
+              priority
             />
           </div>
         </div>
@@ -158,18 +188,30 @@ export default function HomePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {activities.slice(0, 5).map(activity => {
-                    const user = getUser(activity.userId);
-                    const isRequest = 'status' in activity;
+                {loading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                        <TableRow key={i}>
+                            <TableCell colSpan={4} className="text-center">
+                                <p className="animate-pulse">Loading activity...</p>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : recentActivity.length === 0 ? (
+                    <TableRow>
+                        <TableCell colSpan={4} className="text-center h-24">
+                        No recent activity in the community.
+                        </TableCell>
+                    </TableRow>
+                ) : (
+                  recentActivity.map(activity => {
+                    const activityUser = activity.user;
+                    const createdAt = activity.createdAt?.toDate ? activity.createdAt.toDate() : new Date();
+
                     return (
                       <TableRow key={activity.id}>
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
-                            {isRequest ? (
                               <Badge variant="secondary">Request</Badge>
-                            ) : (
-                              <Badge variant="outline">Offer</Badge>
-                            )}
                             <span className="truncate">
                               {activity.description.substring(0, 40)}...
                             </span>
@@ -180,23 +222,24 @@ export default function HomePage() {
                           <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
                               <AvatarImage
-                                src={user?.avatarUrl}
-                                alt={user?.name}
+                                src={activityUser?.avatarUrl}
+                                alt={activityUser?.name}
                                 data-ai-hint="person portrait"
                               />
                               <AvatarFallback>
-                                {user?.name.charAt(0)}
+                                {activityUser?.name.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
-                            <span>{user?.name}</span>
+                            <span>{activityUser?.name}</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-right text-muted-foreground">
-                          {new Date(activity.createdAt).toLocaleDateString()}
+                            {formatDistanceToNow(createdAt, { addSuffix: true })}
                         </TableCell>
                       </TableRow>
                     );
-                  })}
+                  })
+                )}
                 </TableBody>
               </Table>
             </CardContent>
@@ -258,3 +301,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
