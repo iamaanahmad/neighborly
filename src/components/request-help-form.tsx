@@ -24,15 +24,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Bot, Loader2, LogIn } from 'lucide-react';
 import { useFormState, useFormStatus } from 'react-dom';
-import { getHelpRequestSuggestion } from '@/app/actions';
-import { useEffect } from 'react';
+import { getHelpRequestSuggestion, createHelpRequest } from '@/app/actions';
+import { useEffect, useTransition } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 
 const formSchema = z.object({
   requestType: z.string({
     required_error: 'Please select a request type.',
-  }),
+  }).min(1, "Please select a request type."),
   details: z.string().min(10, {
     message: 'Details must be at least 10 characters.',
   }),
@@ -41,9 +41,12 @@ const formSchema = z.object({
 export function RequestHelpForm() {
   const { toast } = useToast();
   const { user } = useAuth();
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      requestType: '',
       details: '',
     },
   });
@@ -75,12 +78,23 @@ export function RequestHelpForm() {
       });
       return;
     }
-    console.log(values);
-    toast({
-      title: 'Request Submitted!',
-      description: 'Your help request has been posted to the community.',
+
+    startTransition(async () => {
+        const result = await createHelpRequest({ ...values, userId: user.id });
+        if (result.error) {
+            toast({
+                variant: 'destructive',
+                title: 'Error submitting request',
+                description: result.error,
+            });
+        } else {
+            toast({
+                title: 'Request Submitted!',
+                description: 'Your help request has been posted to the community.',
+            });
+            form.reset();
+        }
     });
-    form.reset();
   }
   
   function AiButton() {
@@ -166,7 +180,8 @@ export function RequestHelpForm() {
           )}
         />
         <div className="space-y-4">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Post Request
           </Button>
           <form action={formAction}>

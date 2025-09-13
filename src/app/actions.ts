@@ -1,6 +1,8 @@
 'use server';
 
 import { helpRequestAssistance } from '@/ai/flows/help-request-assistance';
+import { db } from '@/lib/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 const suggestionSchema = z.object({
@@ -34,4 +36,42 @@ export async function getHelpRequestSuggestion(formData: FormData) {
       suggestion: null,
     };
   }
+}
+
+const requestSchema = z.object({
+  requestType: z.string().min(1, 'Please select a request type.'),
+  details: z.string().min(10, 'Details must be at least 10 characters.'),
+  userId: z.string(),
+});
+
+export async function createHelpRequest(values: z.infer<typeof requestSchema>) {
+    const validatedFields = requestSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+        return {
+            error: "Invalid fields."
+        };
+    }
+
+    const { requestType, details, userId } = validatedFields.data;
+
+    try {
+        await addDoc(collection(db, 'requests'), {
+            userId,
+            type: requestType,
+            description: details,
+            status: 'open',
+            createdAt: serverTimestamp(),
+        });
+
+    } catch (error) {
+        console.error(error);
+        return {
+            error: "Failed to create request. Please try again."
+        }
+    }
+
+    return {
+        error: null,
+    }
 }

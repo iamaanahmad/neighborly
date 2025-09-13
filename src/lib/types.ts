@@ -12,7 +12,10 @@ export type HelpRequest = {
   type: string;
   description: string;
   status: 'open' | 'in-progress' | 'closed';
-  createdAt: string;
+  createdAt: {
+    seconds: number;
+    nanoseconds: number;
+  } | string;
 };
 
 export type HelpOffer = {
