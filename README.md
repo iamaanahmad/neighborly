@@ -23,13 +23,6 @@ You can try the live application here:
 
 **[https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)**
 
-#### Demo Credentials
-
-To make it easy for you to test, we've set up a demo user with the **"Both"** role, so you can explore all features immediately.
-
--   **Email**: `demo@neighborly.app`
--   **Password**: `password123`
-
 Just head to the login page and use the "Login as Demo User" button for one-click access.
 
 ---
