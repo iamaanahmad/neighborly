@@ -22,42 +22,23 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
 import { HandHelping, FileSearch, MessagesSquare, ShieldCheck, Bot } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { collection, query, orderBy, limit, onSnapshot, getDoc, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { requests as mockRequests, users as mockUsers } from '@/lib/data';
 import type { HelpRequest, User } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
 
 type RequestWithUser = HelpRequest & { user?: User };
 
+// Using mock data for the public homepage
+const recentActivity: RequestWithUser[] = mockRequests
+  .filter(r => r.status === 'open')
+  .slice(0, 5)
+  .map(request => ({
+    ...request,
+    user: mockUsers.find(u => u.id === request.userId)
+  }));
+
+
 export default function HomePage() {
-  const [recentActivity, setRecentActivity] = useState<RequestWithUser[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    const q = query(collection(db, 'requests'), orderBy('createdAt', 'desc'), limit(5));
-
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const activities = await Promise.all(snapshot.docs.map(async (requestDoc) => {
-        const requestData = { ...requestDoc.data(), id: requestDoc.id } as HelpRequest;
-        let userData: User | undefined = undefined;
-
-        if (requestData.userId) {
-          const userSnap = await getDoc(doc(db, 'users', requestData.userId));
-          if (userSnap.exists()) {
-            userData = userSnap.data() as User;
-          }
-        }
-        return { ...requestData, user: userData };
-      }));
-      setRecentActivity(activities);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   return (
     <>
       <section className="w-full py-20 md:py-28 lg:py-36 bg-background">
@@ -188,15 +169,7 @@ export default function HomePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                {loading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
-                        <TableRow key={i}>
-                            <TableCell colSpan={4} className="text-center">
-                                <p className="animate-pulse">Loading activity...</p>
-                            </TableCell>
-                        </TableRow>
-                    ))
-                ) : recentActivity.length === 0 ? (
+                {recentActivity.length === 0 ? (
                     <TableRow>
                         <TableCell colSpan={4} className="text-center h-24">
                         No recent activity in the community.
@@ -205,7 +178,7 @@ export default function HomePage() {
                 ) : (
                   recentActivity.map(activity => {
                     const activityUser = activity.user;
-                    const createdAt = activity.createdAt?.toDate ? activity.createdAt.toDate() : new Date();
+                    const createdAt = new Date(activity.createdAt);
 
                     return (
                       <TableRow key={activity.id}>
@@ -301,4 +274,3 @@ export default function HomePage() {
     </>
   );
 }
-
