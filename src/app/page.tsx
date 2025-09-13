@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowRight, HandHelping, HeartHandshake } from 'lucide-react';
 import { recentRequests, recentOffers, users } from '@/lib/data';
 import { AppHeader } from '@/components/app-header';
 

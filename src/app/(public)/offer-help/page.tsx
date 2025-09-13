@@ -15,7 +15,7 @@ import Link from 'next/link';
 
 export default function OfferHelpPage() {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto py-8">
         <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
             <h1 className="text-2xl font-bold tracking-tight mb-6">Open Requests</h1>
