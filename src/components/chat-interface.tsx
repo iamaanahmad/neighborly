@@ -11,7 +11,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Loader2, Send, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
-import { Card } from './ui/card';
+import { Card } from '@/components/ui/card';
 import {
   collection,
   query,
@@ -393,5 +393,3 @@ export function ChatInterface() {
     </Card>
   );
 }
-
-    
