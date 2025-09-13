@@ -19,9 +19,11 @@ This project was built to demonstrate the power of combining a modern web stack 
 
 ### 🚀 Live Demo
 
-You can try the live application here:
+You can try the live application at either of these URLs:
 
 **[https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)**
+
+**[https://neighborly.appwrite.network/](https://neighborly.appwrite.network/)**
 
 Just head to the login page and use the "Login as Demo User" button for one-click access.
 
