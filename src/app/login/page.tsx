@@ -38,8 +38,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   
-  const demoEmail = 'demo@neighborly.app';
-  const demoPassword = 'password123';
+  const demoEmail = 'demo@user.com';
+  const demoPassword = 'demouser';
 
   useEffect(() => {
     if (!authLoading && user) {
