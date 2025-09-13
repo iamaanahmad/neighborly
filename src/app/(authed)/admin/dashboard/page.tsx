@@ -6,7 +6,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, HandHelping, CircleDot, CheckCircle2 } from 'lucide-react';
+import { Users, HandHelping, CircleDot, CheckCircle2, Hourglass } from 'lucide-react';
 import type { User, HelpRequest } from '@/lib/types';
 
 export default function AdminDashboardPage() {
@@ -53,17 +53,14 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
+          <Skeleton className="h-32" />
+          <Skeleton className="h-32" />
         </div>
-         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
+         <div className="grid gap-6 md:grid-cols-2">
+            <Skeleton className="h-48" />
+            <Skeleton className="h-48" />
          </div>
       </div>
     );
@@ -133,14 +130,14 @@ export default function AdminDashboardPage() {
                 <CardContent className="space-y-4">
                      <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                            <CircleDot className="text-blue-500" />
+                            <CircleDot className="text-primary" />
                             <span className="font-medium">Open</span>
                         </div>
                         <span className="font-bold text-lg">{requestStatusCounts.open}</span>
                     </div>
                      <div className="flex justify-between items-center">
                          <div className="flex items-center gap-2">
-                            <CircleDot className="text-yellow-500" />
+                            <Hourglass className="text-yellow-500" />
                             <span className="font-medium">In Progress</span>
                         </div>
                         <span className="font-bold text-lg">{requestStatusCounts.inProgress}</span>

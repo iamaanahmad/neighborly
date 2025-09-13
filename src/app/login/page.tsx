@@ -82,6 +82,7 @@ export default function LoginPage() {
         title: 'Authentication Error',
         description: error.message,
       });
+    } finally {
       setLoading(false);
     }
   };
@@ -89,28 +90,40 @@ export default function LoginPage() {
   const handleDemoLogin = async () => {
     setLoading(true);
     try {
-      // Check if demo user exists, if not, create it
-      try {
-        await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
-      } catch (error: any) {
-        if (error.code === 'auth/user-not-found') {
-          const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
-          const user = userCredential.user;
-          await setDoc(doc(db, 'users', user.uid), {
-            id: user.uid,
-            name: 'Demo User',
-            email: user.email,
-            role: 'both',
-            avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
-          });
-        } else {
-           throw error; // re-throw other errors
-        }
+      // Ensure demo user exists, if not, create it
+      const userDocRef = doc(db, 'users', 'demouser'); // Use a predictable ID
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // This is a simplified signup for the demo user, in a real app this would be more secure.
+        // We can't create a user with a specific UID on the client, so we'll sign them up and then fetch them.
+        // For this demo, we'll assume the demo user is already in the auth system.
+        // If not, the first login attempt will fail, and we can't create them here with a predictable password.
+        // The logic below ensures that if they don't exist in auth, they are created.
+         try {
+            await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
+         } catch (error: any) {
+            if (error.code === 'auth/user-not-found') {
+              const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
+              const user = userCredential.user;
+              await setDoc(doc(db, 'users', user.uid), {
+                id: user.uid,
+                name: 'Demo User',
+                email: user.email,
+                role: 'both',
+                avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
+              });
+            } else {
+               throw error; // re-throw other errors
+            }
+         }
       }
+      
+      await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
       
       toast({
           title: 'Signed In as Demo User',
-          description: "You're now logged in.",
+          description: "You're now logged in as a user with the 'Both' role.",
       });
 
     } catch (error: any) {
@@ -119,6 +132,7 @@ export default function LoginPage() {
         title: 'Authentication Error',
         description: error.message,
       });
+    } finally {
       setLoading(false);
     }
   }
@@ -196,7 +210,7 @@ export default function LoginPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>I want to...</Label>
-                      <RadioGroup defaultValue="seeker" onValueChange={(value: User['role']) => setRole(value)}>
+                      <RadioGroup defaultValue="seeker" onValueChange={(value: User['role']) => setRole(value)} value={role}>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="seeker" id="r1" />
                           <Label htmlFor="r1">Get help from my community</Label>
@@ -223,14 +237,25 @@ export default function LoginPage() {
             </form>
           </Tabs>
 
-          <Card className="mt-4">
+          <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                  </span>
+              </div>
+          </div>
+
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <UserIcon className="size-5" />
-                For Demo/Judging
+                Demo Mode
               </CardTitle>
                <CardDescription>
-                Click the button below to log in as a pre-configured user with the 'Both' role.
+                For judging or a quick tour, log in as a pre-configured demo user with the 'Both' role.
               </CardDescription>
             </CardHeader>
             <CardContent>

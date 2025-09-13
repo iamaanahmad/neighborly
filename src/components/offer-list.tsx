@@ -19,6 +19,8 @@ import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
+import { formatDistanceToNow } from 'date-fns';
+import { HandHelping, HeartHandshake } from 'lucide-react';
 
 type RequestWithUser = HelpRequest & { user: User | null };
 
@@ -38,7 +40,6 @@ export function OfferList() {
           const requestData = requestDoc.data() as HelpRequest;
           let userData: User | null = null;
           
-          // Prevent showing user's own requests
           if (currentUser && requestData.userId === currentUser.id) {
             return null;
           }
@@ -53,7 +54,6 @@ export function OfferList() {
         })
       );
       
-      // Filter out null values (user's own requests)
       setRequests(requestsData.filter(Boolean) as RequestWithUser[]);
       setLoading(false);
     });
@@ -67,7 +67,6 @@ export function OfferList() {
         return;
     }
     
-    // Pass context to the messages page to initiate a chat
     const queryParams = new URLSearchParams({
       requestId: request.id,
       seekerId: request.userId,
@@ -85,8 +84,11 @@ export function OfferList() {
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
             <CardHeader>
-              <Skeleton className="h-6 w-1/2" />
-              <Skeleton className="h-4 w-1/3" />
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-5 w-16" />
+              </div>
+              <Skeleton className="h-4 w-1/2" />
             </CardHeader>
             <CardContent>
               <div className="flex items-start gap-4">
@@ -108,9 +110,14 @@ export function OfferList() {
   
   if (requests.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 h-64">
-        <h3 className="text-lg font-semibold mb-2">No Open Requests</h3>
-        <p className="text-muted-foreground">It looks like there are no open requests from your neighbors right now. Check back soon!</p>
+      <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed rounded-lg bg-muted/50 min-h-[400px]">
+        <div className="p-4 rounded-full bg-primary/10 mb-4">
+            <HandHelping className="size-8 text-primary" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">No Open Requests</h3>
+        <p className="text-muted-foreground max-w-sm">
+            It looks like all neighbors are taken care of for now. Check back soon, or post your own offer to help!
+        </p>
       </div>
     )
   }
@@ -119,35 +126,34 @@ export function OfferList() {
     <div className="space-y-4">
       {requests.map(request => {
         const user = request.user;
-        const createdAt = typeof request.createdAt === 'string' 
-            ? new Date(request.createdAt)
-            : new Date(request.createdAt.seconds * 1000);
+        const createdAt = request.createdAt?.toDate ? request.createdAt.toDate() : new Date();
 
         return (
-          <Card key={request.id}>
+          <Card key={request.id} className="transition-all hover:shadow-md">
             <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
+              <div className="flex justify-between items-start gap-2">
+                <div className='flex-grow'>
                   <CardTitle className="text-lg">{request.type}</CardTitle>
                   <CardDescription>
-                    Posted by {user?.name ?? 'Anonymous'} on{' '}
-                    {createdAt.toLocaleDateString()}
+                    Posted by {user?.name ?? 'Anonymous'}{' '}
+                    <span className="hidden sm:inline">- {formatDistanceToNow(createdAt, { addSuffix: true })}</span>
                   </CardDescription>
                 </div>
-                <Badge variant="secondary">{request.status}</Badge>
+                <Badge variant="secondary" className="capitalize">{request.status}</Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-start gap-4">
                 <Avatar>
                   <AvatarImage src={user?.avatarUrl} alt={user?.name} data-ai-hint="person portrait" />
-                  <AvatarFallback>{user?.name?.charAt(0) ?? 'A'}</AvatarFallback>
+                  <AvatarFallback>{user?.name?.charAt(0)?.toUpperCase() ?? 'A'}</AvatarFallback>
                 </Avatar>
-                <p className="text-sm text-muted-foreground">{request.description}</p>
+                <p className="text-sm text-muted-foreground mt-1">{request.description}</p>
               </div>
             </CardContent>
             <CardFooter>
               <Button className="w-full" onClick={() => handleOfferHelp(request)}>
+                <HeartHandshake className="mr-2" />
                 Offer to Help
               </Button>
             </CardFooter>

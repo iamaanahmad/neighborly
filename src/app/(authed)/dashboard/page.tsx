@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {canRequestHelp && (
-            <Card className="flex flex-col">
+            <Card className="flex flex-col transition-all hover:shadow-md">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="p-3 rounded-full bg-secondary">
@@ -69,7 +69,7 @@ export default function DashboardPage() {
             </Card>
           )}
           {canOfferHelp && (
-            <Card className="flex flex-col">
+            <Card className="flex flex-col transition-all hover:shadow-md">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="p-3 rounded-full bg-secondary">
