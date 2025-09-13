@@ -94,7 +94,7 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
     } catch (error: any) {
       // If the user doesn't exist, create them.
-      if (error.code === 'auth/user-not-found') {
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
           const user = userCredential.user;
@@ -107,10 +107,6 @@ export default function LoginPage() {
             role: 'both',
             avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
           });
-
-          // Now, sign in again (though createUserWithEmailAndPassword also signs the user in)
-          // This is just to be absolutely sure.
-          await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
 
         } catch (creationError: any) {
           toast({

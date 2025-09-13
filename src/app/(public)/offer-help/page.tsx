@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { LogIn } from 'lucide-react';
 
 export default function OfferHelpPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
@@ -20,7 +20,7 @@ export default function OfferHelpPage() {
         </div>
 
         <div>
-           {!user && (
+           {!user && !loading && (
             <Card>
               <CardHeader>
                 <CardTitle>Want to lend a hand?</CardTitle>

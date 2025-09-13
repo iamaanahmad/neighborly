@@ -27,10 +27,15 @@ type RequestWithUser = HelpRequest & { user: User | null };
 export function OfferList() {
   const [requests, setRequests] = useState<RequestWithUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, loading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
+    if (authLoading) {
+        // Wait until auth state is confirmed before fetching data
+        return;
+    }
+    
     const q = query(collection(db, 'requests'), where('status', '==', 'open'));
 
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
@@ -41,7 +46,7 @@ export function OfferList() {
           let userData: User | null = null;
           
           if (currentUser && requestData.userId === currentUser.id) {
-            return null;
+            return null; // Don't show users their own requests
           }
 
           if (requestData.userId) {
@@ -59,7 +64,7 @@ export function OfferList() {
     });
 
     return () => unsubscribe();
-  }, [currentUser]);
+  }, [currentUser, authLoading]);
 
   const handleOfferHelp = (request: RequestWithUser) => {
     if (!currentUser) {
@@ -67,18 +72,20 @@ export function OfferList() {
         return;
     }
     
+    if (!request.user) return;
+
     const queryParams = new URLSearchParams({
       requestId: request.id,
       seekerId: request.userId,
-      seekerName: request.user?.name || 'User',
-      seekerAvatar: request.user?.avatarUrl || '',
+      seekerName: request.user.name,
+      seekerAvatar: request.user.avatarUrl || '',
       requestDescription: request.description
     });
     
     router.push(`/messages?${queryParams.toString()}`);
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
@@ -116,7 +123,7 @@ export function OfferList() {
         </div>
         <h3 className="text-xl font-semibold mb-2">No Open Requests</h3>
         <p className="text-muted-foreground max-w-sm">
-            It looks like all neighbors are taken care of for now. Check back soon, or post your own offer to help!
+            It looks like all neighbors are taken care of for now. Check back soon to lend a hand!
         </p>
       </div>
     )
