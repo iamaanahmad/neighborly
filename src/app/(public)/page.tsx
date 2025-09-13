@@ -224,7 +224,7 @@ export default function HomePage() {
       <footer className="border-t bg-muted">
         <div className="container mx-auto flex flex-col gap-4 sm:flex-row py-6 items-center px-4 md:px-6">
              <p className="text-sm text-muted-foreground">
-                Made with Firebase Studio
+                Made with Firebase Studio and Gemini (Genkit)
               </p>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
               <Link
