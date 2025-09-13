@@ -229,16 +229,18 @@ export default function HomePage() {
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
               <Link
                 className="text-xs hover:underline underline-offset-4"
-                href="#"
+                href="/about"
               >
                 About
               </Link>
-              <Link
+              <a
                 className="text-xs hover:underline underline-offset-4"
-                href="#"
+                href="https://github.com/iamaanahmad/neighborly"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 GitHub Repo
-              </Link>
+              </a>
                <Link
                 className="text-xs hover:underline underline-offset-4"
                 href="#"
@@ -247,7 +249,7 @@ export default function HomePage() {
               </Link>
               <Link
                 className="text-xs hover:underline underline-offset-4"
-                href="#"
+                href="/terms"
               >
                 Terms
               </Link>
