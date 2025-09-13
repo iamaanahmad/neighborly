@@ -17,6 +17,23 @@ This project was built to demonstrate the power of combining a modern web stack 
 
 ---
 
+### 🚀 Live Demo
+
+You can try the live application here:
+
+**[https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)**
+
+#### Demo Credentials
+
+To make it easy for you to test, we've set up a demo user with the **"Both"** role, so you can explore all features immediately.
+
+-   **Email**: `demo@neighborly.app`
+-   **Password**: `password123`
+
+Just head to the login page and use the "Login as Demo User" button for one-click access.
+
+---
+
 ### ✨ Key Features
 
 -   **🤖 AI-Powered Assistance (Google Gemini & Genkit):**
@@ -38,23 +55,6 @@ This project was built to demonstrate the power of combining a modern web stack 
     -   Built with **Next.js App Router** for a fast, server-first experience with optimized routing.
     -   Styled with **Tailwind CSS** and **ShadCN UI** for a clean, beautiful, and fully responsive interface that looks great on any device.
     -   Includes a user-toggleable light/dark mode theme.
-
----
-
-### 🚀 Live Demo
-
-You can try the live application here:
-
-**[https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)**
-
-#### Demo Credentials
-
-To make it easy for you to test, we've set up a demo user with the **"Both"** role, so you can explore all features immediately.
-
--   **Email**: `demo@neighborly.app`
--   **Password**: `password123`
-
-Just head to the login page and use the "Login as Demo User" button for one-click access.
 
 ---
 
@@ -110,3 +110,5 @@ To run this project on your local machine:
 ---
 
 This project showcases a complete, end-to-end solution that is not only functional but also scalable, user-friendly, and built with a deep consideration for responsible AI implementation.
+
+    
