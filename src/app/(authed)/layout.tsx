@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/contexts/auth-context';
@@ -32,13 +33,13 @@ export default function AuthedLayout({
   }
 
   return (
-      <div className="relative flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full bg-muted/40">
         <Sidebar>
             <AppSidebar />
         </Sidebar>
         <div className="flex flex-col flex-1">
             <AppHeader />
-            <main className="p-4 lg:p-6">{children}</main>
+            <main className="flex-1 overflow-x-hidden">{children}</main>
         </div>
     </div>
   );

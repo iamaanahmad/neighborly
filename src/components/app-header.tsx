@@ -1,9 +1,13 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from './ui/button';
+import { useAuth } from '@/contexts/auth-context';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { HeartHandshake, LogIn, PanelLeft } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +16,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from './ui/button';
-import { useAuth } from '@/contexts/auth-context';
-import { auth } from '@/lib/firebase';
-import { signOut } from 'firebase/auth';
-import { HeartHandshake, LogIn } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { AppSidebar } from './app-sidebar';
 
 const pageTitles: { [key: string]: string } = {
   '/dashboard': 'Dashboard',
@@ -33,7 +35,7 @@ export function AppHeader() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const title = pageTitles[pathname] || (user ? 'Dashboard' : 'Neighborly');
+  const title = pageTitles[pathname] || 'Dashboard';
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -43,22 +45,36 @@ export function AppHeader() {
   const isAuthedPage = !!user;
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
-      {isAuthedPage ? <SidebarTrigger className="md:hidden" /> : null}
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:py-4">
+      {isAuthedPage ? (
+         <Sheet>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="outline" className="sm:hidden">
+                <PanelLeft className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="sm:max-w-xs p-0">
+                <AppSidebar />
+            </SheetContent>
+          </Sheet>
+      ) : null}
       
       {!isAuthedPage ? (
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary mr-auto">
             <HeartHandshake className="size-6" />
             <span className="text-foreground">Neighborly</span>
           </Link>
       ) : (
-         <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+         <div className="hidden sm:block">
+            <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+         </div>
       )}
 
 
       <div className="ml-auto flex items-center gap-4">
         {!isAuthedPage && (
-          <nav className="hidden md:flex gap-4">
+          <nav className="hidden md:flex gap-2">
             <Button variant="ghost" asChild>
               <Link href="/offer-help">Find Requests</Link>
             </Button>
@@ -74,8 +90,8 @@ export function AppHeader() {
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar className="h-10 w-10">
+              <Button variant="outline" size="icon" className="relative h-9 w-9 rounded-full">
+                <Avatar className="h-9 w-9">
                   <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />
                   <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>

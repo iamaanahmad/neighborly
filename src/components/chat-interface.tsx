@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +11,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Send } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
+import { Card } from './ui/card';
 
 export function ChatInterface() {
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
@@ -50,7 +52,7 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[calc(100vh-8rem)] border rounded-lg">
+    <Card className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[calc(100vh-8rem)]">
       <div className="md:col-span-1 lg:col-span-1 border-r">
         <ScrollArea className="h-full">
           <div className="p-2">
@@ -113,7 +115,7 @@ export function ChatInterface() {
                          <AvatarImage src={selectedConversation.userAvatar} data-ai-hint="person portrait" />
                          <AvatarFallback>
                            {selectedConversation.userName.charAt(0)}
-                         </AvatarFallback>
+                         </Fallback>
                        </Avatar>
                     )}
                     <div
