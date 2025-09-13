@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-primary/10 to-accent/10">
-          <div className="container px-4 md:px-6">
+          <div className="container">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
@@ -68,7 +68,7 @@ export default function HomePage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
+            <div className="container">
                  <Card>
                     <CardHeader>
                     <CardTitle>Recent Activity</CardTitle>
@@ -127,7 +127,7 @@ export default function HomePage() {
             </div>
         </section>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center border-t">
         <div className="container flex flex-col gap-2 sm:flex-row items-center">
             <p className="text-xs text-muted-foreground">&copy; 2024 Neighborly. All rights reserved.</p>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
