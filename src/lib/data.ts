@@ -4,12 +4,13 @@ import { PlaceHolderImages } from './placeholder-images';
 const avatar = (id: number) => PlaceHolderImages.find(img => img.id === `avatar-${id}`)?.imageUrl || '';
 
 export const users: User[] = [
-  { id: 'hJ8kL2nPf9aV3gH7jF5t', name: 'Alice Johnson', avatarUrl: avatar(1) },
-  { id: 'pZ6xW8yB4qC9sE1dG3fH', name: 'Bob Williams', avatarUrl: avatar(2) },
-  { id: 'mN5bV2cX1zLp9kR8tY7u', name: 'Charlie Brown', avatarUrl: avatar(3) },
-  { id: 'aQ4sD7fG9hJ2kL5mN1bV', name: 'Diana Miller', avatarUrl: avatar(4) },
-  { id: 'eR8tY2uI4oP6aF1sD3gH', name: 'Eve Davis', avatarUrl: avatar(5) },
-  { id: 'fG9hJ2kL5mN1bV4sD7aQ', name: 'Frank White', avatarUrl: avatar(6) },
+  { id: 'hJ8kL2nPf9aV3gH7jF5t', name: 'Alice Johnson', avatarUrl: avatar(1), email: 'alice@example.com', role: 'helper' },
+  { id: 'pZ6xW8yB4qC9sE1dG3fH', name: 'Bob Williams', avatarUrl: avatar(2), email: 'bob@example.com', role: 'seeker' },
+  { id: 'mN5bV2cX1zLp9kR8tY7u', name: 'Charlie Brown', avatarUrl: avatar(3), email: 'charlie@example.com', role: 'both' },
+  { id: 'aQ4sD7fG9hJ2kL5mN1bV', name: 'Diana Miller', avatarUrl: avatar(4), email: 'diana@example.com', role: 'seeker' },
+  { id: 'eR8tY2uI4oP6aF1sD3gH', name: 'Eve Davis', avatarUrl: avatar(5), email: 'eve@example.com', role: 'helper' },
+  { id: 'fG9hJ2kL5mN1bV4sD7aQ', name: 'Frank White', avatarUrl: avatar(6), email: 'frank@example.com', role: 'seeker' },
+  { id: 'demouser', name: 'Demo User', avatarUrl: 'https://picsum.photos/seed/demouser/100/100', email: 'demo@neighborly.app', role: 'both' },
 ];
 
 export const requests: HelpRequest[] = [
@@ -41,46 +42,29 @@ export const resources: Resource[] = [
 export const conversations: Conversation[] = [
     {
         id: 'convo-1',
-        userId: 'hJ8kL2nPf9aV3gH7jF5t',
+        participantIds: ['hJ8kL2nPf9aV3gH7jF5t', 'pZ6xW8yB4qC9sE1dG3fH'],
         userName: 'Alice Johnson',
         userAvatar: avatar(1),
         lastMessage: "I can pick them up around 5 PM today. Does that work for you?",
         lastMessageTimestamp: "2024-07-21T14:30:00Z",
         unreadCount: 0,
-        messages: [
-            { id: 'msg-1-1', senderId: 'pZ6xW8yB4qC9sE1dG3fH', text: 'I need someone to pick up my prescription from the pharmacy.', timestamp: '2024-07-21T14:00:00Z', isRead: true },
-            { id: 'msg-1-2', senderId: 'hJ8kL2nPf9aV3gH7jF5t', text: "I can help with that! Which pharmacy is it?", timestamp: '2024-07-21T14:05:00Z', isRead: true },
-            { id: 'msg-1-3', senderId: 'pZ6xW8yB4qC9sE1dG3fH', text: "It's the one on Main Street. The prescription is under Bob Williams.", timestamp: '2024-07-21T14:10:00Z', isRead: true },
-            { id: 'msg-1-4', senderId: 'hJ8kL2nPf9aV3gH7jF5t', text: "I can pick them up around 5 PM today. Does that work for you?", timestamp: '2024-07-21T14:30:00Z', isRead: true },
-        ],
     },
     {
         id: 'convo-2',
-        userId: 'mN5bV2cX1zLp9kR8tY7u',
+        participantIds: ['mN5bV2cX1zLp9kR8tY7u', 'aQ4sD7fG9hJ2kL5mN1bV'],
         userName: 'Charlie Brown',
         userAvatar: avatar(3),
         lastMessage: "You're welcome! Glad I could assist.",
         lastMessageTimestamp: "2024-07-19T11:00:00Z",
         unreadCount: 2,
-        messages: [
-            { id: 'msg-2-1', senderId: 'aQ4sD7fG9hJ2kL5mN1bV', text: 'Thank you so much for helping with the package!', timestamp: '2024-07-19T10:00:00Z', isRead: true },
-            { id: 'msg-2-2', senderId: 'mN5bV2cX1zLp9kR8tY7u', text: "You're welcome! Glad I could assist.", timestamp: '2024-07-19T11:00:00Z', isRead: false },
-             { id: 'msg-2-3', senderId: 'mN5bV2cX1zLp9kR8tY7u', text: "Let me know if you need anything else.", timestamp: '2024-07-19T11:01:00Z', isRead: false },
-        ],
     },
     {
         id: 'convo-3',
-        userId: 'aQ4sD7fG9hJ2kL5mN1bV',
+        participantIds: ['aQ4sD7fG9hJ2kL5mN1bV', 'mN5bV2cX1zLp9kR8tY7u'],
         userName: 'Diana Miller',
         userAvatar: avatar(4),
         lastMessage: "Sure thing! See you then.",
         lastMessageTimestamp: "2024-07-22T09:00:00Z",
         unreadCount: 0,
-        messages: [
-            { id: 'msg-3-1', senderId: 'aQ4sD7fG9hJ2kL5mN1bV', text: 'I saw your offer to help with errands. Could you help me tomorrow?', timestamp: '2024-07-22T08:30:00Z', isRead: true },
-            { id: 'msg-3-2', senderId: 'mN5bV2cX1zLp9kR8tY7u', text: 'Yes, I can. What time works for you?', timestamp: '2024-07-22T08:45:00Z', isRead: true },
-            { id: 'msg-3-3', senderId: 'aQ4sD7fG9hJ2kL5mN1bV', text: 'Around 2pm?', timestamp: '2024-07-22T08:50:00Z', isRead: true },
-            { id: 'msg-3-4', senderId: 'mN5bV2cX1zLp9kR8tY7u', text: 'Sure thing! See you then.', timestamp: '2024-07-22T09:00:00Z', isRead: true },
-        ],
     },
 ]

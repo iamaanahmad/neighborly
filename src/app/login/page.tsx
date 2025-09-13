@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { HeartHandshake, Loader2 } from 'lucide-react';
+import { HeartHandshake, Loader2, User as UserIcon } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { User } from '@/lib/types';
 import { AppHeader } from '@/components/app-header';
@@ -37,6 +37,9 @@ export default function LoginPage() {
   const [role, setRole] = useState<User['role']>('seeker');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
+  
+  const demoEmail = 'demo@neighborly.app';
+  const demoPassword = 'password123';
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -81,8 +84,45 @@ export default function LoginPage() {
       });
       setLoading(false);
     }
-    // Don't set loading to false here, let the redirect happen
   };
+
+  const handleDemoLogin = async () => {
+    setLoading(true);
+    try {
+      // Check if demo user exists, if not, create it
+      try {
+        await signInWithEmailAndPassword(auth, demoEmail, demoPassword);
+      } catch (error: any) {
+        if (error.code === 'auth/user-not-found') {
+          const userCredential = await createUserWithEmailAndPassword(auth, demoEmail, demoPassword);
+          const user = userCredential.user;
+          await setDoc(doc(db, 'users', user.uid), {
+            id: user.uid,
+            name: 'Demo User',
+            email: user.email,
+            role: 'both',
+            avatarUrl: `https://picsum.photos/seed/demouser/100/100`,
+          });
+        } else {
+           throw error; // re-throw other errors
+        }
+      }
+      
+      toast({
+          title: 'Signed In as Demo User',
+          description: "You're now logged in.",
+      });
+
+    } catch (error: any) {
+       toast({
+        variant: 'destructive',
+        title: 'Authentication Error',
+        description: error.message,
+      });
+      setLoading(false);
+    }
+  }
+
 
   if (authLoading || user) {
      return (
@@ -182,6 +222,25 @@ export default function LoginPage() {
               </TabsContent>
             </form>
           </Tabs>
+
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <UserIcon className="size-5" />
+                For Demo/Judging
+              </CardTitle>
+               <CardDescription>
+                Click the button below to log in as a pre-configured user with the 'Both' role.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="secondary" className="w-full" onClick={handleDemoLogin} disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Login as Demo User
+              </Button>
+            </CardContent>
+          </Card>
+
         </div>
       </main>
     </div>

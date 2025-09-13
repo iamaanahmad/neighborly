@@ -13,10 +13,7 @@ export type HelpRequest = {
   type: string;
   description: string;
   status: 'open' | 'in-progress' | 'closed';
-  createdAt: {
-    seconds: number;
-    nanoseconds: number;
-  } | string;
+  createdAt: any; // Allow string for mock, and Timestamp for Firestore
 };
 
 export type HelpOffer = {
@@ -42,7 +39,7 @@ export type Message = {
   senderId: string;
   text: string;
   timestamp: any; // Firestore serverTimestamp is tricky to type
-  isRead: boolean;
+  isRead?: boolean;
 };
 
 export type Conversation = {
