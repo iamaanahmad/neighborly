@@ -71,8 +71,8 @@ To run this project on your local machine:
 
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/FirebaseExtended/genkit-nextjs-shadcn-starter.git
-    cd genkit-nextjs-shadcn-starter
+    git clone https://github.com/iamaanahmad/neighborly.git
+    cd neighborly
     ```
 
 2.  **Install Dependencies**:
@@ -105,5 +105,3 @@ To run this project on your local machine:
 ---
 
 This project showcases a complete, end-to-end solution that is not only functional but also scalable, user-friendly, and built with a deep consideration for responsible AI implementation.
-
-    

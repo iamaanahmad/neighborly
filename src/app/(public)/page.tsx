@@ -277,7 +277,7 @@ export default function HomePage() {
               </Link>
               <a
                 className="text-xs hover:underline underline-offset-4"
-                href="https://github.com/FirebaseExtended/genkit-nextjs-shadcn-starter"
+                href="https://github.com/iamaanahmad/neighborly"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -302,4 +302,3 @@ export default function HomePage() {
   );
 }
 
-    
