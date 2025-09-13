@@ -7,26 +7,52 @@ import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import type { User } from '@/lib/types';
 
+type Theme = 'light' | 'dark' | 'system';
+
 interface AuthContextType {
   user: User | null;
   firebaseUser: FirebaseUser | null;
   loading: boolean;
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   firebaseUser: null,
   loading: true,
+  theme: 'system',
+  setTheme: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState<Theme>('system');
 
   useEffect(() => {
+    const storedTheme = localStorage.getItem('neighborly-theme') as Theme | null;
+    if (storedTheme) {
+      setTheme(storedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+
+    let effectiveTheme = theme;
+    if (theme === 'system') {
+      effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    root.classList.add(effectiveTheme);
+    localStorage.setItem('neighborly-theme', theme);
+  }, [theme]);
+  
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-      // setLoading(true); // This causes a flicker, handled by the default state
       if (fbUser) {
         setFirebaseUser(fbUser);
         const userDocRef = doc(db, 'users', fbUser.uid);
@@ -35,8 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userDoc.exists()) {
           setUser({ id: userDoc.id, ...userDoc.data() } as User);
         } else {
-          // This case might happen if the user was created but the Firestore doc wasn't.
-          // We can create a default profile here as a fallback.
            const newUser: User = {
                 id: fbUser.uid,
                 email: fbUser.email!,
@@ -58,8 +82,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
+  const handleSetTheme = (newTheme: Theme) => {
+    setTheme(newTheme);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, firebaseUser, loading }}>
+    <AuthContext.Provider value={{ user, firebaseUser, loading, theme, setTheme: handleSetTheme }}>
       {children}
     </AuthContext.Provider>
   );

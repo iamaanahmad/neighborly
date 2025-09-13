@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import { useAuth } from '@/contexts/auth-context';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
-import { HeartHandshake, LogIn, PanelLeft } from 'lucide-react';
+import { HeartHandshake, LogIn, PanelLeft, Moon, Sun } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,7 +34,7 @@ const pageTitles: { [key: string]: string } = {
 export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, theme, setTheme } = useAuth();
 
   const title = pageTitles[pathname] || 'Neighborly';
   const isAuthedPage = !!user;
@@ -42,6 +42,10 @@ export function AppHeader() {
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
+  };
+  
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -71,7 +75,7 @@ export function AppHeader() {
         </div>
       )}
 
-      <div className="flex items-center gap-4 ml-auto">
+      <div className="flex items-center gap-2 md:gap-4 ml-auto">
         {!isAuthedPage && (
           <nav className="hidden md:flex gap-2">
             <Button variant="ghost" asChild>
@@ -85,6 +89,12 @@ export function AppHeader() {
             </Button>
           </nav>
         )}
+        
+        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
 
         {user ? (
           <DropdownMenu>
