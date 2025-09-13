@@ -20,6 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { recentRequests, recentOffers, users } from '@/lib/data';
 import Image from 'next/image';
+import { HandHelping, Link2, Smile } from 'lucide-react';
 
 export default function HomePage() {
   const activities = [...recentRequests, ...recentOffers].sort(
@@ -30,9 +31,9 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-primary/10 to-accent/10">
+      <section className="w-full py-20 md:py-28 lg:py-36 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:gap-24">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -64,9 +65,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full py-12 md:py-24 lg:py-32">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <Card>
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">How It Works</h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    Getting or offering help is simple. Follow these three easy steps to get started with your community.
+                </p>
+                </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-12 py-12 sm:grid-cols-3">
+                <div className="grid gap-4 text-center">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <HandHelping className="h-8 w-8" />
+                    </div>
+                    <div className="grid gap-1">
+                        <h3 className="text-lg font-bold">1. Create a Request</h3>
+                        <p className="text-sm text-muted-foreground">
+                            Let your community know what you need by filling out a simple form.
+                        </p>
+                    </div>
+                </div>
+                <div className="grid gap-4 text-center">
+                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Link2 className="h-8 w-8" />
+                    </div>
+                    <div className="grid gap-1">
+                        <h3 className="text-lg font-bold">2. Get Connected</h3>
+                        <p className="text-sm text-muted-foreground">
+                           A volunteer in your area will see your request and offer to help.
+                        </p>
+                    </div>
+                </div>
+                <div className="grid gap-4 text-center">
+                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Smile className="h-8 w-8" />
+                    </div>
+                    <div className="grid gap-1">
+                        <h3 className="text-lg font-bold">3. Help Arrives</h3>
+                        <p className="text-sm text-muted-foreground">
+                            Coordinate with your neighbor via chat and get the help you need.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+        <div className="container mx-auto px-4 md:px-6">
+          <Card className="max-w-4xl mx-auto">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
               <CardDescription>
@@ -130,7 +179,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t">
+      <footer className="border-t bg-background">
         <div className="container mx-auto flex flex-col gap-2 sm:flex-row py-6 items-center px-4 md:px-6">
             <p className="text-xs text-muted-foreground">
               &copy; {new Date().getFullYear()} Neighborly. All rights reserved.
@@ -154,3 +203,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
