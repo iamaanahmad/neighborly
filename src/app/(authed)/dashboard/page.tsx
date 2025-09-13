@@ -173,7 +173,7 @@ export default function DashboardPage() {
                         <TableCell className="hidden md:table-cell">
                             <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src={activityUser?.avatarUrl} alt={activityUser?.name} data-ai-hint="person portrait" />
+                                <AvatarImage src={activityUser?.avatarUrl} alt={activityUser?.name} />
                                 <AvatarFallback>
                                 {activityUser?.name.charAt(0)}
                                 </AvatarFallback>
@@ -196,3 +196,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

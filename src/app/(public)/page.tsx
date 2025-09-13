@@ -69,6 +69,7 @@ export default function HomePage() {
               alt="Community helping hands"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full"
               priority
+              data-ai-hint="community people"
             />
           </div>
         </div>
@@ -197,7 +198,6 @@ export default function HomePage() {
                               <AvatarImage
                                 src={activityUser?.avatarUrl}
                                 alt={activityUser?.name}
-                                data-ai-hint="person portrait"
                               />
                               <AvatarFallback>
                                 {activityUser?.name.charAt(0)}
@@ -274,3 +274,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    

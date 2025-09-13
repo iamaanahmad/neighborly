@@ -1,24 +1,35 @@
-import type { HelpRequest, HelpOffer, Resource, User, Conversation } from '@/lib/types';
-import { PlaceHolderImages } from './placeholder-images';
 
-const avatar = (id: number) => PlaceHolderImages.find(img => img.id === `avatar-${id}`)?.imageUrl || '';
+import type { HelpRequest, HelpOffer, Resource, User, Conversation } from '@/lib/types';
+
+const avatar = (id: number | string) => `https://picsum.photos/seed/${id}/100/100`;
 
 export const users: User[] = [
-  { id: 'hJ8kL2nPf9aV3gH7jF5t', name: 'Alice Johnson', avatarUrl: avatar(1), email: 'alice@example.com', role: 'helper' },
-  { id: 'pZ6xW8yB4qC9sE1dG3fH', name: 'Bob Williams', avatarUrl: avatar(2), email: 'bob@example.com', role: 'seeker' },
-  { id: 'mN5bV2cX1zLp9kR8tY7u', name: 'Charlie Brown', avatarUrl: avatar(3), email: 'charlie@example.com', role: 'both' },
-  { id: 'aQ4sD7fG9hJ2kL5mN1bV', name: 'Diana Miller', avatarUrl: avatar(4), email: 'diana@example.com', role: 'seeker' },
-  { id: 'eR8tY2uI4oP6aF1sD3gH', name: 'Eve Davis', avatarUrl: avatar(5), email: 'eve@example.com', role: 'helper' },
-  { id: 'fG9hJ2kL5mN1bV4sD7aQ', name: 'Frank White', avatarUrl: avatar(6), email: 'frank@example.com', role: 'seeker' },
-  { id: 'demouser', name: 'Demo User', avatarUrl: 'https://picsum.photos/seed/demouser/100/100', email: 'demo@neighborly.app', role: 'both' },
+  { id: 'hJ8kL2nPf9aV3gH7jF5t', name: 'Alice Johnson', avatarUrl: avatar('alice'), email: 'alice@example.com', role: 'helper' },
+  { id: 'pZ6xW8yB4qC9sE1dG3fH', name: 'Bob Williams', avatarUrl: avatar('bob'), email: 'bob@example.com', role: 'seeker' },
+  { id: 'mN5bV2cX1zLp9kR8tY7u', name: 'Charlie Brown', avatarUrl: avatar('charlie'), email: 'charlie@example.com', role: 'both' },
+  { id: 'aQ4sD7fG9hJ2kL5mN1bV', name: 'Diana Miller', avatarUrl: avatar('diana'), email: 'diana@example.com', role: 'seeker' },
+  { id: 'eR8tY2uI4oP6aF1sD3gH', name: 'Eve Davis', avatarUrl: avatar('eve'), email: 'eve@example.com', role: 'helper' },
+  { id: 'fG9hJ2kL5mN1bV4sD7aQ', name: 'Frank White', avatarUrl: avatar('frank'), email: 'frank@example.com', role: 'seeker' },
+  { id: 'demouser', name: 'Demo User', avatarUrl: avatar('demouser'), email: 'demo@neighborly.app', role: 'both' },
 ];
 
+// Dynamically generate recent dates for mock data
+const now = new Date();
+const recentDates = [
+    new Date(now.getTime() - 10 * 60 * 1000).toISOString(), // 10 minutes ago
+    new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    new Date(now.getTime() - 22 * 60 * 60 * 1000).toISOString(), // 22 hours ago
+    new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
+];
+
+
 export const requests: HelpRequest[] = [
-  { id: 'req-1', userId: 'pZ6xW8yB4qC9sE1dG3fH', type: 'Groceries', description: 'Need help picking up some essential groceries. I am elderly and cannot leave my house.', status: 'open', createdAt: '2024-07-20T10:00:00Z' },
-  { id: 'req-2', userId: 'aQ4sD7fG9hJ2kL5mN1bV', type: 'Errands', description: 'Can someone help me post a package? The post office is a bit far for me to walk.', status: 'open', createdAt: '2024-07-21T11:30:00Z' },
-  { id: 'req-3', userId: 'eR8tY2uI4oP6aF1sD3gH', type: 'Medical Aid', description: 'I need someone to pick up my prescription from the pharmacy.', status: 'in-progress', createdAt: '2024-07-21T14:00:00Z' },
-  { id: 'req-4', userId: 'pZ6xW8yB4qC9sE1dG3fH', type: 'Gardening', description: 'My garden is overgrown, would appreciate some help with weeding.', status: 'closed', createdAt: '2024-07-19T09:00:00Z' },
-  { id: 'req-5', userId: 'fG9hJ2kL5mN1bV4sD7aQ', type: 'Groceries', description: 'Just need a few items from the local store - milk, bread, and eggs.', status: 'open', createdAt: '2024-07-22T08:00:00Z' },
+  { id: 'req-1', userId: 'pZ6xW8yB4qC9sE1dG3fH', type: 'Groceries', description: 'Need help picking up some essential groceries. I am elderly and cannot leave my house.', status: 'open', createdAt: recentDates[0] },
+  { id: 'req-2', userId: 'aQ4sD7fG9hJ2kL5mN1bV', type: 'Errands', description: 'Can someone help me post a package? The post office is a bit far for me to walk.', status: 'open', createdAt: recentDates[1] },
+  { id: 'req-3', userId: 'mN5bV2cX1zLp9kR8tY7u', type: 'Medical Aid', description: 'I need someone to pick up my prescription from the pharmacy.', status: 'in-progress', createdAt: recentDates[2] },
+  { id: 'req-4', userId: 'pZ6xW8yB4qC9sE1dG3fH', type: 'Gardening', description: 'My garden is overgrown, would appreciate some help with weeding.', status: 'closed', createdAt: recentDates[3] },
+  { id: 'req-5', userId: 'fG9hJ2kL5mN1bV4sD7aQ', type: 'Groceries', description: 'Just need a few items from the local store - milk, bread, and eggs.', status: 'open', createdAt: recentDates[4] },
 ];
 
 export const recentRequests: HelpRequest[] = requests.filter(r => r.status !== 'closed');
@@ -44,7 +55,7 @@ export const conversations: Conversation[] = [
         id: 'convo-1',
         participantIds: ['hJ8kL2nPf9aV3gH7jF5t', 'pZ6xW8yB4qC9sE1dG3fH'],
         userName: 'Alice Johnson',
-        userAvatar: avatar(1),
+        userAvatar: avatar('alice'),
         lastMessage: "I can pick them up around 5 PM today. Does that work for you?",
         lastMessageTimestamp: "2024-07-21T14:30:00Z",
         unreadCount: 0,
@@ -53,7 +64,7 @@ export const conversations: Conversation[] = [
         id: 'convo-2',
         participantIds: ['mN5bV2cX1zLp9kR8tY7u', 'aQ4sD7fG9hJ2kL5mN1bV'],
         userName: 'Charlie Brown',
-        userAvatar: avatar(3),
+        userAvatar: avatar('charlie'),
         lastMessage: "You're welcome! Glad I could assist.",
         lastMessageTimestamp: "2024-07-19T11:00:00Z",
         unreadCount: 2,
@@ -62,9 +73,11 @@ export const conversations: Conversation[] = [
         id: 'convo-3',
         participantIds: ['aQ4sD7fG9hJ2kL5mN1bV', 'mN5bV2cX1zLp9kR8tY7u'],
         userName: 'Diana Miller',
-        userAvatar: avatar(4),
+        userAvatar: avatar('diana'),
         lastMessage: "Sure thing! See you then.",
         lastMessageTimestamp: "2024-07-22T09:00:00Z",
         unreadCount: 0,
     },
 ]
+
+    
