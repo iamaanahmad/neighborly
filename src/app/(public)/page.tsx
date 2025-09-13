@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { recentRequests, recentOffers, users } from '@/lib/data';
 import Image from 'next/image';
-import { HandHelping, Link2, Smile } from 'lucide-react';
+import { HandHelping, FileSearch, MessagesSquare, ShieldCheck, Bot } from 'lucide-react';
 
 export default function HomePage() {
   const activities = [...recentRequests, ...recentOffers].sort(
@@ -31,25 +31,24 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="w-full py-20 md:py-28 lg:py-36 bg-gradient-to-r from-primary/10 to-accent/10">
+      <section className="w-full py-20 md:py-28 lg:py-36 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:gap-24">
             <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Welcome to Neighborly
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-6xl/none">
+                  Get and Give Help in Your Community — Powered by AI
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Your local community support and resource finder. Connect with
-                  your neighbors to give and receive help.
+                  Seekers can ask for help, Helpers can offer assistance, and Gemini AI makes it simple to connect.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button asChild size="lg">
-                  <Link href="/request-help">Request Help</Link>
+                  <Link href="/request-help">Sign Up to Request Help</Link>
                 </Button>
                 <Button asChild size="lg" variant="secondary">
-                  <Link href="/offer-help">Offer Help</Link>
+                  <Link href="/offer-help">Sign Up to Offer Help</Link>
                 </Button>
               </div>
             </div>
@@ -65,13 +64,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
         <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">How It Works</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Getting or offering help is simple. Follow these three easy steps to get started with your community.
+                    Connecting with your community is easy. Here’s how you can get started in just three simple steps.
                 </p>
                 </div>
             </div>
@@ -81,31 +80,31 @@ export default function HomePage() {
                         <HandHelping className="h-8 w-8" />
                     </div>
                     <div className="grid gap-1">
-                        <h3 className="text-lg font-bold">1. Create a Request</h3>
+                        <h3 className="text-lg font-bold">1. Sign Up</h3>
                         <p className="text-sm text-muted-foreground">
-                            Let your community know what you need by filling out a simple form.
+                            Choose your role as a Seeker, a Helper, or both to join the community.
                         </p>
                     </div>
                 </div>
                 <div className="grid gap-4 text-center">
                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Link2 className="h-8 w-8" />
+                        <FileSearch className="h-8 w-8" />
                     </div>
                     <div className="grid gap-1">
-                        <h3 className="text-lg font-bold">2. Get Connected</h3>
+                        <h3 className="text-lg font-bold">2. Post or Browse</h3>
                         <p className="text-sm text-muted-foreground">
-                           A volunteer in your area will see your request and offer to help.
+                           Create a request for assistance or browse requests from your neighbors.
                         </p>
                     </div>
                 </div>
                 <div className="grid gap-4 text-center">
                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Smile className="h-8 w-8" />
+                        <MessagesSquare className="h-8 w-8" />
                     </div>
                     <div className="grid gap-1">
-                        <h3 className="text-lg font-bold">3. Help Arrives</h3>
+                        <h3 className="text-lg font-bold">3. Connect Securely</h3>
                         <p className="text-sm text-muted-foreground">
-                            Coordinate with your neighbor via chat and get the help you need.
+                            Use our secure chat to coordinate details and get the help you need.
                         </p>
                     </div>
                 </div>
@@ -113,13 +112,40 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+           <div className="grid gap-10 lg:grid-cols-2">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">AI in Action</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">AI-Powered Assistance</h2>
+              <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Our app uses Gemini to make communication clearer and faster. AI helps you write effective help requests and suggests polite replies, so you can focus on what matters: helping each other.
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+                <Card className="w-full max-w-md">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Bot className="text-primary"/> AI Assistant</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-sm text-muted-foreground">User's rough draft:</p>
+                        <p className="p-3 rounded-md bg-muted text-sm">"need groceries"</p>
+                        <p className="text-sm text-muted-foreground">AI's suggested post:</p>
+                        <p className="p-3 rounded-md border border-primary/20 bg-primary/10 text-sm">"I'm in need of some essential groceries this week. Any help picking them up would be greatly appreciated!"</p>
+                    </CardContent>
+                </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
         <div className="container mx-auto px-4 md:px-6">
           <Card className="max-w-4xl mx-auto">
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle>Live Community Activity</CardTitle>
               <CardDescription>
-                See what's happening in your community.
+                See what's happening in your community right now.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -179,8 +205,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t bg-background">
-        <div className="container mx-auto flex flex-col gap-2 sm:flex-row py-6 items-center px-4 md:px-6">
+      <section className="w-full py-12 md:py-24">
+          <div className="container mx-auto px-4 md:px-6 text-center">
+            <div className="mx-auto max-w-3xl space-y-4">
+                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck className="size-4 text-primary"/>
+                        <span>Trust & Safety</span>
+                    </div>
+                </div>
+                <p className="text-muted-foreground md:text-xl">
+                    We moderate all posts with AI to ensure a safe and respectful community environment.
+                </p>
+            </div>
+          </div>
+      </section>
+
+      <footer className="border-t bg-muted">
+        <div className="container mx-auto flex flex-col gap-4 sm:flex-row py-6 items-center px-4 md:px-6">
             <p className="text-xs text-muted-foreground">
               &copy; {new Date().getFullYear()} Neighborly. All rights reserved.
             </p>
@@ -189,13 +231,25 @@ export default function HomePage() {
                 className="text-xs hover:underline underline-offset-4"
                 href="#"
               >
-                Terms of Service
+                About
               </Link>
               <Link
                 className="text-xs hover:underline underline-offset-4"
                 href="#"
               >
-                Privacy
+                GitHub Repo
+              </Link>
+               <Link
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
+                Contact
+              </Link>
+              <Link
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
+                Terms
               </Link>
             </nav>
         </div>
