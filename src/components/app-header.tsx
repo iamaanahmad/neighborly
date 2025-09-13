@@ -31,17 +31,16 @@ const pageTitles: { [key: string]: string } = {
 export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const title = pageTitles[pathname] || 'Neighborly';
   const { user } = useAuth();
+
+  const title = pageTitles[pathname] || (user ? 'Dashboard' : 'Neighborly');
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
   };
 
-  const isAuthedPage = 
-    pathname.startsWith('/dashboard') ||
-    pathname.startsWith('/messages');
+  const isAuthedPage = !!user;
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
@@ -78,7 +77,7 @@ export function AppHeader() {
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -87,7 +86,7 @@ export function AppHeader() {
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user.name}</p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    {user.id.substring(0,10)}
+                    {user.email}
                   </p>
                 </div>
               </DropdownMenuLabel>

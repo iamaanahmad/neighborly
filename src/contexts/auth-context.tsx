@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import type { User } from '@/lib/types';
-import { users } from '@/lib/data';
+import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
   user: User | null;
@@ -26,21 +26,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      setLoading(true);
       if (fbUser) {
         setFirebaseUser(fbUser);
-        // In a real app, you would fetch user profile from Firestore
-        // For this prototype, we'll find the user in our mock data
-        const userProfile = users.find(u => u.id === fbUser.uid);
-        if (userProfile) {
-          setUser(userProfile);
+        const userDocRef = doc(db, 'users', fbUser.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          setUser(userDoc.data() as User);
         } else {
-            // If user not in mock data, create a basic user profile
-            const newUser: User = {
+          // This case might happen if the user was created but the Firestore doc wasn't.
+          // We can create a default profile here as a fallback.
+           const newUser: User = {
                 id: fbUser.uid,
-                name: fbUser.email?.split('@')[0] || 'New User',
-                avatarUrl: `https://picsum.photos/seed/${fbUser.uid}/100/100`,
-            }
-            setUser(newUser);
+                email: fbUser.email!,
+                name: fbUser.displayName || fbUser.email?.split('@')[0] || 'New User',
+                avatarUrl: fbUser.photoURL || `https://picsum.photos/seed/${fbUser.uid}/100/100`,
+                role: 'seeker' // default role
+            };
+          await setDoc(userDocRef, newUser);
+          setUser(newUser);
         }
 
       } else {
@@ -52,6 +57,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => unsubscribe();
   }, []);
+
+  // Show a global loader while we are verifying the auth state
+  if (loading) {
+    return (
+       <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <AuthContext.Provider value={{ user, firebaseUser, loading }}>
