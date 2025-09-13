@@ -4,10 +4,10 @@
 import { useEffect, useState, useRef, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { Conversation, Message, User } from '@/lib/types';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { ScrollArea } from './ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Loader2, Send, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
