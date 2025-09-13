@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -25,16 +25,24 @@ import { HeartHandshake, Loader2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { User } from '@/lib/types';
 import { AppHeader } from '@/components/app-header';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<User['role']>('seeker');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, authLoading, router]);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,17 +72,25 @@ export default function LoginPage() {
           description: "You're now logged in.",
         });
       }
-      router.push('/dashboard');
+      // The useEffect hook will handle the redirect
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Authentication Error',
         description: error.message,
       });
-    } finally {
       setLoading(false);
     }
+    // Don't set loading to false here, let the redirect happen
   };
+
+  if (authLoading || user) {
+     return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
