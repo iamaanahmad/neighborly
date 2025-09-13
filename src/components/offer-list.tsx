@@ -61,13 +61,22 @@ export function OfferList() {
     return () => unsubscribe();
   }, [currentUser]);
 
-  const handleOfferHelp = (requestId: string) => {
+  const handleOfferHelp = (request: RequestWithUser) => {
     if (!currentUser) {
         router.push('/login');
         return;
     }
-    // For now, let's navigate to messages. Later this would initiate a chat.
-    router.push(`/messages?requestId=${requestId}`);
+    
+    // Pass context to the messages page to initiate a chat
+    const queryParams = new URLSearchParams({
+      requestId: request.id,
+      seekerId: request.userId,
+      seekerName: request.user?.name || 'User',
+      seekerAvatar: request.user?.avatarUrl || '',
+      requestDescription: request.description
+    });
+    
+    router.push(`/messages?${queryParams.toString()}`);
   }
 
   if (loading) {
@@ -138,7 +147,7 @@ export function OfferList() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={() => handleOfferHelp(request.id)}>
+              <Button className="w-full" onClick={() => handleOfferHelp(request)}>
                 Offer to Help
               </Button>
             </CardFooter>

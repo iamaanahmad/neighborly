@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   name: string;
@@ -53,4 +54,5 @@ export type Conversation = {
   lastMessageTimestamp: string;
   unreadCount: number;
   messages: Message[];
+  requestId?: string; // To link conversation to a specific request
 };

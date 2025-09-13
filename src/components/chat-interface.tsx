@@ -1,8 +1,9 @@
 
 'use client';
 
-import { useState } from 'react';
-import { conversations as mockConversations, users } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { conversations as mockConversations } from '@/lib/data';
 import type { Conversation, Message } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -15,10 +16,59 @@ import { Card } from './ui/card';
 
 export function ChatInterface() {
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(conversations.length > 0 ? conversations[0] : null);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState('');
-
+  const searchParams = useSearchParams();
   const { user: currentUser } = useAuth();
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const requestId = searchParams.get('requestId');
+    const seekerId = searchParams.get('seekerId');
+
+    if (requestId && seekerId) {
+      // Find if a conversation already exists for this request/user
+      const existingConvo = conversations.find(c => c.requestId === requestId && c.userId === seekerId);
+
+      if (existingConvo) {
+        selectConversation(existingConvo);
+      } else {
+        // Create a new conversation
+        const seekerName = searchParams.get('seekerName') || 'User';
+        const seekerAvatar = searchParams.get('seekerAvatar') || `https://picsum.photos/seed/${seekerId}/100/100`;
+        const requestDescription = searchParams.get('requestDescription') || 'this request';
+        
+        const initialMessage: Message = {
+          id: `msg-init-${Date.now()}`,
+          senderId: 'system', // Differentiate system messages
+          text: `You have connected to discuss the request: "${requestDescription.substring(0, 50)}..."`,
+          timestamp: new Date().toISOString(),
+          isRead: true,
+        };
+
+        const newConvo: Conversation = {
+          id: `convo-${Date.now()}`,
+          requestId: requestId,
+          userId: seekerId,
+          userName: seekerName,
+          userAvatar: seekerAvatar,
+          lastMessage: initialMessage.text,
+          lastMessageTimestamp: initialMessage.timestamp,
+          unreadCount: 0,
+          messages: [initialMessage],
+        };
+
+        setConversations(prev => [newConvo, ...prev]);
+        selectConversation(newConvo);
+      }
+    } else if (conversations.length > 0 && !selectedConversation) {
+        // Default to selecting the first conversation if none is specified in URL
+        selectConversation(conversations[0]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, currentUser, conversations]);
+
 
   if (!currentUser) return null;
 
@@ -58,7 +108,7 @@ export function ChatInterface() {
   }
 
   return (
-    <Card className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-full w-full rounded-none md:rounded-lg border-0 md:border">
+    <Card className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-full w-full rounded-lg border">
       <div className="md:col-span-1 lg:col-span-1 border-r flex flex-col">
         <div className="p-4 border-b">
             <h2 className="text-xl font-semibold">Messages</h2>
@@ -114,37 +164,46 @@ export function ChatInterface() {
             </div>
             <ScrollArea className="flex-1 p-4 bg-muted/30">
               <div className="space-y-4">
-                {selectedConversation.messages.map(message => (
-                  <div
-                    key={message.id}
-                    className={cn(
-                      'flex items-end gap-2',
-                      message.senderId === currentUser.id ? 'justify-end' : 'justify-start'
-                    )}
-                  >
-                    {message.senderId !== currentUser.id && (
-                       <Avatar className="size-8">
-                         <AvatarImage src={selectedConversation.userAvatar} data-ai-hint="person portrait" />
-                         <AvatarFallback>
-                           {selectedConversation.userName.charAt(0)}
-                         </Fallback>
-                       </Avatar>
-                    )}
+                {selectedConversation.messages.map(message => {
+                  if (message.senderId === 'system') {
+                    return (
+                      <div key={message.id} className="text-center text-xs text-muted-foreground italic my-4">
+                        <p>{message.text}</p>
+                      </div>
+                    )
+                  }
+                  return (
                     <div
+                      key={message.id}
                       className={cn(
-                        'max-w-xs rounded-lg p-3 text-sm lg:max-w-md shadow-sm',
-                        message.senderId === currentUser.id
-                          ? 'bg-primary text-primary-foreground rounded-br-none'
-                          : 'bg-card text-card-foreground rounded-bl-none'
+                        'flex items-end gap-2',
+                        message.senderId === currentUser.id ? 'justify-end' : 'justify-start'
                       )}
                     >
-                      <p>{message.text}</p>
-                       <p className={cn("text-xs mt-1 opacity-70", message.senderId === currentUser.id ? 'text-right' : 'text-left' )}>
-                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
+                      {message.senderId !== currentUser.id && (
+                         <Avatar className="size-8">
+                           <AvatarImage src={selectedConversation.userAvatar} data-ai-hint="person portrait" />
+                           <AvatarFallback>
+                             {selectedConversation.userName.charAt(0)}
+                           </Fallback>
+                         </Avatar>
+                      )}
+                      <div
+                        className={cn(
+                          'max-w-xs rounded-lg p-3 text-sm lg:max-w-md shadow-sm',
+                          message.senderId === currentUser.id
+                            ? 'bg-primary text-primary-foreground rounded-br-none'
+                            : 'bg-card text-card-foreground rounded-bl-none'
+                        )}
+                      >
+                        <p>{message.text}</p>
+                         <p className={cn("text-xs mt-1 opacity-70", message.senderId === currentUser.id ? 'text-right' : 'text-left' )}>
+                          {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </ScrollArea>
             <div className="p-4 border-t bg-card">
