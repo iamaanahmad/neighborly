@@ -325,7 +325,7 @@ export function ChatInterface() {
                             <AvatarImage src={selectedConversation.userAvatar} data-ai-hint="person portrait" />
                             <AvatarFallback>
                               {selectedConversation.userName?.charAt(0)}
-                            </Fallback>
+                            </AvatarFallback>
                           </Avatar>
                         )}
                         <div
