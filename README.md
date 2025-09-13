@@ -2,6 +2,7 @@
 
 **Get and Give Help in Your Community — Powered by AI**
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Open_App-brightgreen)](https://studio--studio-8690552426-bc4ba.us-central1.hosted.app/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.3-black?logo=next.js)](https://nextjs.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime_Backend-orange?logo=firebase)](https://firebase.google.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI_Powered-blue?logo=google&logoColor=white)](https://ai.google/gemini/)
