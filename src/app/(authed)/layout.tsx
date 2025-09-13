@@ -5,7 +5,6 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Sidebar } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppHeader } from '@/components/app-header';
 
@@ -26,7 +25,7 @@ export default function AuthedLayout({
 
   if (loading || !user) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -34,12 +33,12 @@ export default function AuthedLayout({
 
   return (
       <div className="flex min-h-screen w-full bg-muted/40">
-        <Sidebar>
+        <aside className="hidden w-64 flex-col border-r bg-background sm:flex">
             <AppSidebar />
-        </Sidebar>
-        <div className="flex flex-col flex-1">
+        </aside>
+        <div className="flex flex-1 flex-col">
             <AppHeader />
-            <main className="flex-1 overflow-x-hidden">{children}</main>
+            <main className="flex-1 overflow-auto">{children}</main>
         </div>
     </div>
   );

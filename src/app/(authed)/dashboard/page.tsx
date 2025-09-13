@@ -36,7 +36,7 @@ export default function DashboardPage() {
   const canOfferHelp = user?.role === 'helper' || user?.role === 'both';
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 px-4 md:px-6">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight">Hello, {user?.name}!</h1>

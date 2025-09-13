@@ -13,10 +13,11 @@ import {
 } from '@/components/ui/select';
 import { OfferList } from '@/components/offer-list';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function OfferHelpPage() {
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 px-4 md:px-6">
         <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
             <h1 className="text-2xl font-bold tracking-tight mb-6">Open Requests</h1>
@@ -56,7 +57,7 @@ export default function OfferHelpPage() {
                     <Label htmlFor="description">Description</Label>
                     <Textarea id="description" placeholder="Describe how you can help." />
                 </div>
-                <Button asChild className="w-full">
+                 <Button asChild className="w-full">
                   <Link href="/login">
                     Login to Post Offer
                   </Link>

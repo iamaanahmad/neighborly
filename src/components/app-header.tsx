@@ -35,18 +35,17 @@ export function AppHeader() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const title = pageTitles[pathname] || 'Dashboard';
+  const title = pageTitles[pathname] || 'Neighborly';
+  const isAuthedPage = !!user;
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
   };
 
-  const isAuthedPage = !!user;
-
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:py-4">
-      {isAuthedPage ? (
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+      {isAuthedPage && (
          <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -58,7 +57,7 @@ export function AppHeader() {
                 <AppSidebar />
             </SheetContent>
           </Sheet>
-      ) : null}
+      )}
       
       {!isAuthedPage ? (
           <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary mr-auto">
@@ -66,13 +65,12 @@ export function AppHeader() {
             <span className="text-foreground">Neighborly</span>
           </Link>
       ) : (
-         <div className="hidden sm:block">
-            <h1 className="text-lg font-semibold md:text-xl">{title}</h1>
+         <div className="flex-1">
+            <h1 className="text-lg font-semibold md:text-xl hidden sm:block">{title}</h1>
          </div>
       )}
 
-
-      <div className="ml-auto flex items-center gap-4">
+      <div className="flex items-center gap-4 ml-auto">
         {!isAuthedPage && (
           <nav className="hidden md:flex gap-2">
             <Button variant="ghost" asChild>

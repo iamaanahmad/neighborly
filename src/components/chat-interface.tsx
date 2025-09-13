@@ -15,7 +15,7 @@ import { Card } from './ui/card';
 
 export function ChatInterface() {
   const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation>(conversations[0]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(conversations.length > 0 ? conversations[0] : null);
   const [newMessage, setNewMessage] = useState('');
 
   const { user: currentUser } = useAuth();
@@ -24,7 +24,7 @@ export function ChatInterface() {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMessage.trim() === '') return;
+    if (newMessage.trim() === '' || !selectedConversation) return;
 
     const message: Message = {
       id: `msg-${Date.now()}`,
@@ -50,24 +50,36 @@ export function ChatInterface() {
 
     setNewMessage('');
   };
+  
+  const selectConversation = (convo: Conversation) => {
+    const updatedConvo = { ...convo, unreadCount: 0 };
+    setSelectedConversation(updatedConvo);
+    setConversations(conversations.map(c => c.id === convo.id ? updatedConvo : c));
+  }
 
   return (
-    <Card className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[calc(100vh-8rem)]">
-      <div className="md:col-span-1 lg:col-span-1 border-r">
-        <ScrollArea className="h-full">
+    <Card className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-full w-full rounded-none md:rounded-lg border-0 md:border">
+      <div className="md:col-span-1 lg:col-span-1 border-r flex flex-col">
+        <div className="p-4 border-b">
+            <h2 className="text-xl font-semibold">Messages</h2>
+        </div>
+        <ScrollArea className="flex-1">
           <div className="p-2">
             {conversations.map(convo => (
               <button
                 key={convo.id}
                 className={cn(
                   'flex w-full items-start gap-3 rounded-lg p-3 text-left transition-colors hover:bg-accent',
-                  selectedConversation.id === convo.id && 'bg-accent'
+                  selectedConversation?.id === convo.id && 'bg-accent'
                 )}
-                onClick={() => setSelectedConversation(convo)}
+                onClick={() => selectConversation(convo)}
               >
-                <Avatar>
+                <Avatar className="relative">
                   <AvatarImage src={convo.userAvatar} data-ai-hint="person portrait" />
                   <AvatarFallback>{convo.userName.charAt(0)}</AvatarFallback>
+                   {convo.unreadCount > 0 && (
+                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-white" />
+                  )}
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
@@ -76,10 +88,10 @@ export function ChatInterface() {
                         {new Date(convo.lastMessageTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">{convo.lastMessage}</p>
+                  <p className={cn("text-sm truncate", convo.unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground")}>{convo.lastMessage}</p>
                 </div>
                  {convo.unreadCount > 0 && (
-                  <div className="bg-primary text-primary-foreground text-xs rounded-full size-5 flex items-center justify-center">
+                  <div className="bg-primary text-primary-foreground text-xs rounded-full size-5 flex items-center justify-center font-semibold">
                     {convo.unreadCount}
                   </div>
                 )}
@@ -100,7 +112,7 @@ export function ChatInterface() {
               </Avatar>
               <h2 className="font-semibold text-lg">{selectedConversation.userName}</h2>
             </div>
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 p-4 bg-muted/30">
               <div className="space-y-4">
                 {selectedConversation.messages.map(message => (
                   <div
@@ -120,10 +132,10 @@ export function ChatInterface() {
                     )}
                     <div
                       className={cn(
-                        'max-w-xs rounded-lg p-3 text-sm lg:max-w-md',
+                        'max-w-xs rounded-lg p-3 text-sm lg:max-w-md shadow-sm',
                         message.senderId === currentUser.id
                           ? 'bg-primary text-primary-foreground rounded-br-none'
-                          : 'bg-secondary rounded-bl-none'
+                          : 'bg-card text-card-foreground rounded-bl-none'
                       )}
                     >
                       <p>{message.text}</p>
@@ -135,12 +147,13 @@ export function ChatInterface() {
                 ))}
               </div>
             </ScrollArea>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t bg-card">
               <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                 <Input
                   placeholder="Type a message..."
                   value={newMessage}
                   onChange={e => setNewMessage(e.target.value)}
+                  className="bg-muted"
                 />
                 <Button type="submit" size="icon">
                   <Send className="size-4" />
@@ -149,7 +162,7 @@ export function ChatInterface() {
             </div>
           </>
         ) : (
-          <div className="flex flex-1 items-center justify-center text-muted-foreground">
+          <div className="flex flex-1 items-center justify-center text-muted-foreground bg-muted/30">
             <p>Select a conversation to start chatting</p>
           </div>
         )}

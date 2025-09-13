@@ -19,6 +19,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { recentRequests, recentOffers, users } from '@/lib/data';
+import Image from 'next/image';
 
 export default function HomePage() {
   const activities = [...recentRequests, ...recentOffers].sort(
@@ -54,7 +55,7 @@ export default function HomePage() {
                   </Button>
                 </div>
               </div>
-               <img
+               <Image
                 src="https://picsum.photos/seed/welcome/600/400"
                 width="600"
                 height="400"
