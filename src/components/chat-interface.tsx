@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useRef, useTransition } from 'react';
@@ -389,6 +390,8 @@ export function ChatInterface() {
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
+
+    
