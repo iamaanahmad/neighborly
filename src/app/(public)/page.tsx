@@ -53,10 +53,10 @@ export default function HomePage() {
               </div>
             </div>
             <Image
-              src="https://picsum.photos/seed/helping-hands/600/400"
+              src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1470&auto=format&fit=crop"
               width="600"
               height="400"
-              alt="Community"
+              alt="Community helping hands"
               data-ai-hint="community helping"
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full"
             />
@@ -259,5 +259,3 @@ export default function HomePage() {
     </>
   );
 }
-
-    
