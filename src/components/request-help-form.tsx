@@ -22,10 +22,12 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2 } from 'lucide-react';
+import { Bot, Loader2, LogIn } from 'lucide-react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { getHelpRequestSuggestion } from '@/app/actions';
 import { useEffect } from 'react';
+import { useAuth } from '@/contexts/auth-context';
+import Link from 'next/link';
 
 const formSchema = z.object({
   requestType: z.string({
@@ -38,6 +40,7 @@ const formSchema = z.object({
 
 export function RequestHelpForm() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,6 +67,14 @@ export function RequestHelpForm() {
   }, [state, form, toast]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Required',
+        description: 'You must be logged in to post a request.',
+      });
+      return;
+    }
     console.log(values);
     toast({
       title: 'Request Submitted!',
@@ -88,6 +99,21 @@ export function RequestHelpForm() {
         )}
         Get AI Suggestion
       </Button>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg">
+        <h3 className="text-lg font-semibold mb-2">Login to Continue</h3>
+        <p className="text-muted-foreground mb-4">You need to be logged in to create a help request.</p>
+        <Button asChild>
+          <Link href="/login">
+            <LogIn className="mr-2" />
+            Login or Sign Up
+          </Link>
+        </Button>
+      </div>
     )
   }
 

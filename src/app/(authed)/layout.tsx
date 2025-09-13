@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
+import { Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppHeader } from '@/components/app-header';
 
@@ -32,7 +32,7 @@ export default function AuthedLayout({
   }
 
   return (
-     <SidebarProvider>
+      <>
         <Sidebar>
             <AppSidebar />
         </Sidebar>
@@ -40,6 +40,6 @@ export default function AuthedLayout({
             <AppHeader />
             <main className="p-4 lg:p-6">{children}</main>
         </SidebarInset>
-    </SidebarProvider>
+    </>
   );
 }

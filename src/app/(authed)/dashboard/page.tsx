@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ArrowRight, HandHelping, HeartHandshake } from 'lucide-react';
 import { recentRequests, recentOffers, users } from '@/lib/data';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function DashboardPage() {
   const activities = [...recentRequests, ...recentOffers].sort(

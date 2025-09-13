@@ -14,35 +14,37 @@ import { Separator } from './ui/separator';
 import {
   HandHelping,
   HeartHandshake,
-  Home,
+  LayoutGrid,
   BookMarked,
   MessagesSquare,
   Settings,
   CircleHelp,
 } from 'lucide-react';
-
-const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/request-help', label: 'Request Help', icon: HandHelping },
-  { href: '/offer-help', label: 'Offer Help', icon: HeartHandshake },
-  { href: '/resources', label: 'Resources', icon: BookMarked },
-  { href: '/messages', label: 'Messages', icon: MessagesSquare },
-];
+import { useAuth } from '@/contexts/auth-context';
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const menuItems = [
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid, authed: true },
+    { href: '/request-help', label: 'Request Help', icon: HandHelping, authed: false },
+    { href: '/offer-help', label: 'Offer Help', icon: HeartHandshake, authed: false },
+    { href: '/resources', label: 'Resources', icon: BookMarked, authed: false },
+    { href: '/messages', label: 'Messages', icon: MessagesSquare, authed: true },
+  ];
 
   return (
     <>
       <SidebarHeader>
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
           <HeartHandshake className="size-7" />
           <span className="text-foreground">Neighborly</span>
         </Link>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>
-          {menuItems.map(item => (
+          {menuItems.filter(item => !item.authed || (item.authed && user)).map(item => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
